@@ -95,6 +95,36 @@
             color: var(--success-color);
         }
 
+        .copy-btn.copied::after {
+            content: "Copied!";
+            position: absolute;
+            top: 50%;
+            right: 110%;
+            transform: translateY(-50%);
+            background-color: var(--text-color);
+            color: var(--bg-color);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            opacity: 0;
+            white-space: nowrap;
+            pointer-events: none;
+            animation: tooltipFadeIn 0.3s forwards;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes tooltipFadeIn {
+            from {
+                opacity: 0;
+                transform: translate(10px, -50%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(0, -50%);
+            }
+        }
+
         /* --- 4. ERROR MESSAGE --- */
         #error-msg {
             display: none;
@@ -153,23 +183,94 @@
         }
 
         // --- MAIN LOGIC ---
-        const urlParams = new URLSearchParams(window.location.search);
+        let queryString = window.location.search;
+        if (!queryString && window.location.hash) {
+            // Support params in hash to avoid Quarto build warnings about broken links
+            let h = window.location.hash.substring(1);
+            // If hash starts with a ?, strip it
+            if (h.startsWith('?')) h = h.substring(1);
+            queryString = h;
+        }
+
+        const urlParams = new URLSearchParams(queryString);
         const fileUrl = urlParams.get('file');
         const codeEl = document.getElementById('code-content');
         const btn = document.getElementById('copy-btn');
         const errEl = document.getElementById('error-msg');
 
         // Copy Feature
-        btn.addEventListener('click', () => {
-            navigator.clipboard.writeText(codeEl.innerText).then(() => {
-                const originalHTML = btn.innerHTML;
-                btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>`;
-                btn.classList.add('copied');
+        const copyToClipboard = async (text) => {
+            // Option 1: Modern Async API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    return true;
+                } catch (err) {
+                    console.warn("Clipboard API failed, trying fallback...", err);
+                }
+            }
 
-                setTimeout(() => {
-                    btn.innerHTML = originalHTML;
-                    btn.classList.remove('copied');
-                }, 2000);
+            // Option 2: Flashback to 2015 (execCommand)
+            // Sturdy fallback for non-secure contexts or older browsers
+            try {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+
+                // Ensure it's not visible but part of DOM
+                textArea.style.position = "fixed";
+                textArea.style.left = "-9999px";
+                textArea.style.top = "0";
+                document.body.appendChild(textArea);
+
+                textArea.focus();
+                textArea.select();
+
+                const successful = document.execCommand('copy');
+                document.body.removeChild(textArea);
+
+                if (successful) return true;
+            } catch (err) {
+                console.error("Fallback copy failed", err);
+            }
+
+            return false;
+        };
+
+        const showCopySuccess = () => {
+            const originalHTML = btn.innerHTML;
+            const originalTitle = btn.getAttribute('title');
+
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>`;
+            btn.classList.add('copied');
+            btn.removeAttribute('title');
+
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('copied');
+                if (originalTitle) btn.setAttribute('title', originalTitle);
+            }, 2000);
+        };
+
+        const showCopyError = () => {
+            const originalHTML = btn.innerHTML;
+            // X icon
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>`;
+            btn.style.color = "var(--error-color)";
+
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.style.color = "";
+            }, 2000);
+        };
+
+        btn.addEventListener('click', () => {
+            copyToClipboard(codeEl.innerText).then(success => {
+                if (success) {
+                    showCopySuccess();
+                } else {
+                    console.error("Failed to copy code.");
+                    showCopyError();
+                }
             });
         });
 
@@ -206,6 +307,11 @@
                     btn.style.display = "none";
                 });
         }
+
+        // Handle hash changes
+        window.addEventListener('hashchange', () => {
+            window.location.reload();
+        });
     </script>
 </body>
 

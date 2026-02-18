@@ -2,11 +2,12 @@ project:
   type: website
   output-dir: _site
   resources:
-    - "assets/**"       # Copie des scripts et du viewer
-    - "lab/**"          # Copie des sources pour le viewer
+    - "lab/**"
+    - "assets/viewer.html"
+    - "assets/logo.svg"
 
-  post-render:
-  - python assets/scripts/build_lite.py
+filters:
+  - _extensions/aptitek/filetree/filetree.lua
 
 website:
   title: "Développement Desktop"
@@ -35,7 +36,7 @@ format:
   html:
     theme:
       - cosmo        # On garde la structure de base propre
-      - theme/main.scss  # On applique notre surcouche Solarized (Modularisée)
+      - theme/theme.scss
     mainfont: "Recursive"
     monofont: "Recursive"
     # Active la coloration syntaxique Solarized native pour le code

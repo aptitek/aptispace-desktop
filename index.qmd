@@ -18,8 +18,14 @@ flowchart LR
 
 ## 3. Code Interactif (Visualiseur)
 
-{{< filetree lab/TP1 >}}
+::: {.filetree title="TP1" zip="lab/TP1.zip"}
+- [test.ipynb](lab/TP1/test.ipynb)
+- [test.java](lab/TP1/test.java)
+- folder
+  - test.ipynb
+  - test.java
+:::
 
 ## 4. Notebook Jupyter
 
-{{< jupyterlite lab/notebooks/test.ipynb >}}
+[Ouvrir le notebook](lab/TP1/test.ipynb)

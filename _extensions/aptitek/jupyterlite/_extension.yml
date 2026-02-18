@@ -1,7 +1,0 @@
-title: JupyterLite Shortcode
-author: Aptitek
-version: 1.0.0
-quarto-required: ">=1.0.0"
-contributes:
-  shortcodes:
-    - jupyterlite.lua

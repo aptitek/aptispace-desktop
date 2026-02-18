@@ -1,0 +1,428 @@
+/*-- scss:defaults --*/
+@import "variables";
+
+/*-- scss:rules --*/
+@import url('https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap');
+
+// ==========================================
+// 2. CSS VARIABLES (Runtime Tokens)
+// ==========================================
+// Expose tokens to CSS for usage in JS/HTML (Viewer, IFrames...)
+
+:root {
+    --bg-color: #{$sol-base3};
+    --text-color: #{$sol-base00};
+    --sidebar-bg: #{$sol-base2};
+    --border-color: #{$sol-base2};
+    --link-color: #{$sol-blue};
+    --link-hover: #{$sol-orange};
+    --success-color: #{$sol-green};
+    --error-color: #{$sol-red};
+    --code-bg: #{$sol-base2};
+    --btn-hover: #{$sol-base2};
+
+    --font-base: #{$font-family-base};
+    --font-code: #{$font-family-code};
+}
+
+// ==========================================
+// 3. LAYOUT & TYPOGRAPHY
+// ==========================================
+
+// Import fonts defined in tokens/quarto variables? 
+// No, standard CSS import is better in rules or in _tokens if allowed.
+// But _tokens is defaults.
+// Let's put the font import here or in main.
+
+// 4. TYPOGRAPHY GÉNÉRALE
+body {
+    font-family: $font-family-base;
+    font-variation-settings: 'MONO' 0, 'CASL' 0, 'slnt' 0, 'CRSV' 0.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: $sol-base01;
+    font-weight: $headings-font-weight;
+    font-variation-settings: 'MONO' 0, 'CASL' 0.5;
+}
+
+pre,
+code,
+kbd,
+samp {
+    font-family: $font-family-code;
+    font-variation-settings: 'MONO' 1;
+    font-size: 0.9em;
+}
+
+// 5. GESTION DES LIENS (Corps du texte)
+main {
+    a {
+        color: $sol-blue;
+        text-decoration: none;
+        border-bottom: 1px dotted transparent;
+        transition: all 0.2s ease;
+
+        &:visited {
+            color: $sol-violet !important;
+        }
+
+        &:hover {
+            color: $sol-orange !important;
+            border-bottom-color: $sol-orange;
+        }
+    }
+}
+
+// ==========================================
+// 4. SIDEBAR NAVIGATION
+// ==========================================
+
+div.sidebar-item-container .sidebar-item-text.sidebar-link {
+    color: $sol-base01 !important;
+    font-family: $font-family-base;
+    font-variation-settings: 'MONO' 0, 'CASL' 0.5;
+
+    &:visited {
+        color: $sol-base01 !important;
+    }
+
+    &:hover {
+        color: $sol-orange !important;
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+}
+
+div.sidebar-item-container .sidebar-item-text.sidebar-link.active {
+    color: $sol-blue !important;
+    font-weight: 800;
+    border-left: 3px solid $sol-blue;
+    background-color: transparent;
+    padding-left: 0.8rem;
+}
+
+// Titre du menu gauche
+.sidebar-title {
+    color: $sol-base02;
+    font-weight: 900;
+}
+
+// ==========================================
+// 5. TABLE OF CONTENTS (Right Sidebar)
+// ==========================================
+
+#quarto-toc {
+
+    // Les liens inactifs de la TOC
+    .nav-link {
+        color: $sol-base01;
+        font-family: $font-family-base;
+        font-size: 0.85em;
+        font-variation-settings: 'MONO' 0, 'CASL' 0.5;
+        transition: color 0.2s ease;
+
+        &:hover {
+            color: $sol-orange !important;
+        }
+    }
+}
+
+// L'élément ACTIF (Vert Solarized)
+.sidebar nav[role=doc-toc] ul>li>a.active,
+.sidebar nav[role=doc-toc] ul>li>ul>li>a.active {
+    color: $sol-green !important;
+    font-weight: 700;
+
+    // La petite barre verticale à gauche de l'élément actif
+    border-left: 2px solid $sol-green !important;
+    padding-left: 10px;
+    background-color: transparent;
+}
+
+// ==========================================
+// 6. MERMAID DIAGRAMS
+// ==========================================
+
+/* Ciblage global du conteneur Mermaid */
+.cell-output-display .mermaid {
+    font-family: $font-family-code !important;
+    background-color: transparent !important;
+}
+
+/* 1. LES BOITES (Nœuds) */
+/* Force le beige foncé ($sol-base2) et les bordures grises ($sol-base01) */
+g.node rect,
+g.node circle,
+g.node polygon,
+g.node path {
+    fill: $sol-base2 !important;
+    stroke: $sol-base01 !important;
+    stroke-width: 1.5px !important;
+}
+
+/* 2. LE TEXTE DANS LES BOITES */
+/* Gris foncé ($sol-base00) */
+g.node .label {
+    color: $sol-base00 !important;
+    font-family: $font-family-code !important;
+    font-weight: 500;
+}
+
+/* Hack pour le texte HTML dans Mermaid */
+g.node .nodeLabel,
+g.node .label div {
+    color: $sol-base00 !important;
+    background-color: transparent !important;
+}
+
+/* 3. LES LIENS (Flèches) */
+/* Gris clair ($sol-base1) */
+.edgePath .path {
+    stroke: $sol-base1 !important;
+    stroke-width: 2px !important;
+}
+
+/* Les pointes de flèches (Markers) */
+#mermaid-defs marker path,
+marker path {
+    fill: $sol-base1 !important;
+    stroke: $sol-base1 !important;
+}
+
+/* 4. LES FORMES SPÉCIALES */
+g.node polygon {
+    fill: $sol-base3 !important;
+}
+
+/* 5. NOTES (Post-it) */
+g.note rect {
+    fill: $sol-base3 !important;
+    stroke: $sol-yellow !important;
+}
+
+g.note .label {
+    color: $sol-base00 !important;
+    font-family: $font-family-code !important;
+}
+
+/* 6. ÉTIQUETTES SUR LES FLÈCHES */
+g.edgeLabel,
+.edgeLabel {
+    color: $sol-base00 !important;
+    fill: $sol-base00 !important;
+    font-family: $font-family-code !important;
+}
+
+g.edgeLabel p {
+    background-color: $sol-base3 !important;
+    color: $sol-base00 !important;
+    font-family: $font-family-code !important;
+    padding: 2px 4px;
+    font-size: 0.9em;
+}
+
+g.edgeLabel rect {
+    fill: $sol-base3 !important;
+    opacity: 1 !important;
+    stroke: none !important;
+}
+
+// ==========================================
+// 7. WIDGET "FAKE IDE" (File Explorer)
+// ==========================================
+
+// NOTE: Uses variables mapped in _css-variables.scss for runtime consistency?
+// Actually SCSS runs at build time, so we use SCSS tokens here.
+
+.ide-container {
+    display: flex;
+    min-height: 100px;
+    border: 1px solid $sol-base1;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    font-family: $font-family-base;
+    background-color: $sol-base3;
+    transition: all 0.3s ease;
+}
+
+/* --- SIDEBAR --- */
+.ide-sidebar {
+    width: 100%;
+    background-color: $sol-base2;
+    padding: 10px;
+    border-right: none;
+    transition: width 0.3s ease;
+}
+
+/* --- MAIN --- */
+.ide-main {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.ide-main iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* --- ACTIVE STATE --- */
+.ide-container.is-active {
+    height: 600px;
+}
+
+.ide-container.is-active .ide-sidebar {
+    width: 250px;
+    border-right: 1px solid $sol-base1;
+    overflow-y: auto;
+}
+
+.ide-container.is-active .ide-main {
+    display: flex;
+    opacity: 1;
+}
+
+/* --- UI ELEMENTS --- */
+.ide-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 10px;
+}
+
+.ide-title {
+    font-weight: 800;
+    color: $sol-base01;
+    text-transform: uppercase;
+    font-size: 0.75em;
+}
+
+.ide-download-btn {
+    font-size: 0.75em;
+    background-color: $sol-base3;
+    color: $sol-blue !important;
+    border: 1px solid $sol-base1;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-decoration: none !important;
+    font-weight: bold;
+}
+
+.ide-download-btn:hover {
+    background-color: $sol-blue;
+    color: white !important;
+}
+
+
+/* File List */
+ul.file-tree-list,
+ul.file-tree-list ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.file-tree-list .folder ul {
+    padding-left: 24px;
+    /* Increased indent */
+    border-left: 1px solid rgba(0, 0, 0, 0.05);
+    margin-left: 4px;
+    /* Slight offset for border alignment */
+}
+
+.file a,
+.folder summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 3px 0;
+    text-decoration: none;
+    color: $sol-base00;
+    cursor: pointer;
+    list-style: none;
+    /* Hide default marker */
+}
+
+.folder summary::-webkit-details-marker {
+    display: none;
+}
+
+.folder-arrow {
+    margin-right: 5px;
+    font-size: 0.8em;
+    transition: transform 0.2s ease;
+    display: inline-block;
+}
+
+details[open]>summary>.folder-arrow {
+    transform: rotate(90deg);
+}
+
+.file a:hover {
+    color: $sol-orange !important;
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.bi {
+    opacity: 0.8;
+}
+
+// ==========================================
+// 8. JUPYTERLITE CARD (Shortcode)
+// ==========================================
+
+.jupyterlite-container {
+    border: 1px solid $sol-base1;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    background-color: $sol-base3;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    font-family: $font-family-base;
+}
+
+.jupyterlite-header {
+    background-color: $sol-base2;
+    padding: 8px 12px;
+    border-bottom: 1px solid $sol-base1;
+    color: $sol-base01;
+    font-weight: 700;
+    font-size: 0.9em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    i.bi-journal-code {
+        margin-right: 6px;
+        color: $sol-orange;
+    }
+}
+
+.jupyterlite-fullscreen {
+    color: $sol-base00;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover {
+        color: $sol-blue;
+    }
+}
+
+.jupyterlite-container iframe {
+    width: 100%;
+    height: 600px;
+    /* Default height */
+    border: none;
+    display: block;
+}
