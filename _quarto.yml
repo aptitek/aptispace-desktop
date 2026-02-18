@@ -1,0 +1,64 @@
+project:
+  type: website
+  output-dir: _site
+  resources:
+    - "assets/**"       # Copie des scripts et du viewer
+
+  post-render:
+  - python assets/scripts/build_lite.py
+
+website:
+  title: "Développement Desktop"
+  # DÉSACTIVER l'indexation (Anti-Google)
+  search: false
+  site-url: "https://desktop.apti.space"
+  
+  sidebar:
+    # --- CONFIGURATION BRANDING ---
+    logo: "assets/logo.svg"          # Chemin vers l'image
+    logo-href: "https://aptitek.io"  # Redirection externe vers votre site
+    logo-alt: "Aptitek"              # Texte alternatif pour l'accessibilité
+    # ------------------------------
+    style: "docked"
+    search: false
+    
+    contents:
+      - section: "Introduction"
+        contents: index.qmd
+      - section: "Chapitres"
+        contents: 
+          - cours/0.Install.qmd
+          - cours/1.Java.qmd
+
+format:
+  html:
+    theme:
+      - cosmo        # On garde la structure de base propre
+      - solarized.scss  # On applique notre surcouche Solarized
+    mainfont: "Recursive"
+    monofont: "Recursive"
+    # Active la coloration syntaxique Solarized native pour le code
+    highlight-style: solarized
+    toc: true            # Table des matières automatique
+    code-copy: true      # Bouton "copier" sur les blocs de code
+    code-tools:
+      source: true
+      toggle: false
+      caption: "Voir le code source"
+    mermaid:
+      theme: neutral
+    html-math-method: katex
+    
+    # Injection pour bloquer les robots d'indexation
+    header-includes: |
+      <meta name="robots" content="noindex, nofollow">
+
+typst:
+    toc: true
+    number-sections: true
+    # On garde la police Recursive pour l'identité visuelle
+    mainfont: "Recursive"
+    # On garde le style "propre" (noir sur blanc) pour l'économie d'encre
+    # Si vous voulez vraiment un PDF Solarized, on peut changer, 
+    # mais je déconseille pour l'impression des élèves.
+    papersize: a4

@@ -1,0 +1,24 @@
+{
+  "jupyter-lite-schema-version": 0,
+  "apps": {
+    "lab": {
+      "name": "Notebook",
+      "version": "1.0.0",
+      "logo": false
+    }
+  },
+  "stand alone packages": {
+    "jupyterlab-solarized-theme": "latest" 
+  },
+  "settings": {
+    "@jupyterlab/apputils-extension:themes": {
+      "theme": "JupyterLab Light"
+    },
+    "@jupyterlab/notebook-extension:tracker": {
+      "codeCellConfig": {
+        "lineNumbers": true,
+        "fontFamily": "Recursive, monospace"
+      }
+    }
+  }
+}

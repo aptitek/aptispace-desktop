@@ -1,0 +1,344 @@
+/*-- scss:defaults --*/
+
+// 1. IMPORTATION FONTS (Recursive)
+@import url('https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap');
+
+// 2. PALETTE SOLARIZED (Couleurs Officielles)
+$base03:    #002b36;
+$base02:    #073642;
+$base01:    #586e75;
+$base00:    #657b83;
+$base0:     #839496;
+$base1:     #93a1a1;
+$base2:     #eee8d5; // Fond Sidebar Gauche
+$base3:     #fdf6e3; // Fond Page
+$yellow:    #b58900;
+$orange:    #cb4b16; // Highlight
+$red:       #dc322f;
+$magenta:   #d33682;
+$violet:    #6c71c4; // Liens visités
+$blue:      #268bd2; // Liens
+$cyan:      #2aa198;
+$green:     #859900; // Actif TOC (Droite)
+
+// 3. VARIABLES GLOBALES QUARTO
+$body-bg:       $base3;      
+$body-color:    $base00;
+$link-color:    $blue;
+
+// Variables Sidebar Gauche
+$sidebar-bg:    $base2;
+$sidebar-fg:    $base01;
+
+/*-- scss:rules --*/
+
+// ==========================================
+// 3. MAPPING BOOTSTRAP (Le coeur du système)
+// ==========================================
+
+// Couleurs Sémantiques (Boutons, Alertes, Badges)
+$primary:       $blue !default;
+$secondary:     $base1 !default;
+$success:       $green !default;
+$info:          $cyan !default;
+$warning:       $yellow !default;
+$danger:        $red !default;
+$light:         $base2 !default;
+$dark:          $base02 !default;
+
+// Corps de page
+$body-bg:       $base3 !default;
+$body-color:    $base00 !default;
+
+// Liens
+$link-color:            $blue !default;
+$link-decoration:       none !default;
+$link-hover-color:      $orange !default;
+$link-hover-decoration: none !default;
+
+// Typographie (Bootstrap utilisera Recursive partout)
+$font-family-sans-serif: 'Recursive', sans-serif !default;
+$font-family-monospace:  'Recursive', monospace !default;
+$headings-color:         $base01 !default;
+$headings-font-weight:   800 !default;
+
+// Composants d'interface (UI)
+$border-color:                $base2 !default; // Bordures douces
+$input-bg:                    $base3 !default; // Champs de formulaire
+$input-color:                 $base00 !default;
+$input-border-color:          $base1 !default;
+$card-bg:                     $base3 !default; // Cartes
+$card-border-color:           $base2 !default;
+$list-group-bg:               $base3 !default;
+$list-group-border-color:     $base2 !default;
+$modal-content-bg:            $base3 !default;
+
+// Blocs de code (Préformattés)
+$pre-color:                   $base01 !default; // Texte code
+$pre-bg:                      $base2 !default;  // Fond code bloc
+
+// Navbar & Sidebar Variables (Quarto Specifics)
+$navbar-bg:                   $base2 !default;
+$navbar-fg:                   $base01 !default;
+$sidebar-bg:                  $base2 !default;
+$sidebar-fg:                  $base01 !default;
+$footer-bg:                   $base2 !default;
+
+// 4. TYPOGRAPHIE GÉNÉRALE
+body {
+  font-family: 'Recursive', sans-serif;
+  font-variation-settings: 'MONO' 0, 'CASL' 0, 'slnt' 0, 'CRSV' 0.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: $base01;
+  font-weight: 800;
+  font-variation-settings: 'MONO' 0, 'CASL' 0.5;
+}
+
+pre, code, kbd, samp {
+  font-family: 'Recursive', monospace;
+  font-variation-settings: 'MONO' 1; 
+  font-size: 0.9em;
+}
+
+// 5. GESTION DES LIENS (Corps du texte)
+main {
+  a {
+    color: $blue;
+    text-decoration: none;
+    border-bottom: 1px dotted transparent;
+    transition: all 0.2s ease;
+
+    &:visited { color: $violet !important; }
+    &:hover { color: $orange !important; border-bottom-color: $orange; }
+  }
+}
+
+// 6. BARRE DE GAUCHE (Navigation Principale)
+div.sidebar-item-container .sidebar-item-text.sidebar-link {
+  color: $base01 !important;
+  font-family: 'Recursive', sans-serif;
+  font-variation-settings: 'MONO' 0, 'CASL' 0.5;
+  
+  &:visited { color: $base01 !important; } // Pas de violet ici
+  
+  &:hover {
+    color: $orange !important;
+    background-color: rgba(0,0,0,0.03);
+  }
+}
+
+div.sidebar-item-container .sidebar-item-text.sidebar-link.active {
+  color: $blue !important; // Reste bleu à gauche (Convention navigation)
+  font-weight: 800;
+  border-left: 3px solid $blue;
+  background-color: transparent;
+  padding-left: 0.8rem;
+}
+
+// Titre du menu gauche
+.sidebar-title { color: $base02; font-weight: 900; }
+
+
+// 7. BARRE DE DROITE (TOC - Table des matières)
+// C'est ici que la magie du VERT opère
+
+#quarto-toc {
+  // Les liens inactifs de la TOC
+  .nav-link {
+    color: $base01; // Gris moyen (discret)
+    font-family: 'Recursive', sans-serif;
+    font-size: 0.85em;
+    font-variation-settings: 'MONO' 0, 'CASL' 0.5;
+    transition: color 0.2s ease;
+
+    &:hover {
+      color: $orange !important; // Orange au survol
+    }
+  }
+
+}
+
+// L'élément ACTIF (Vert Solarized)
+.sidebar nav[role=doc-toc] ul>li>a.active, .sidebar nav[role=doc-toc] ul>li>ul>li>a.active {
+  color: $green !important; // VERT #859900
+  font-weight: 700;
+  
+  // La petite barre verticale à gauche de l'élément actif
+  border-left: 2px solid $green !important; 
+  padding-left: 10px;
+  background-color: transparent; 
+}
+
+/* =========================================
+   8. MERMAID SOLARIZED - FORÇAGE CSS
+   ========================================= */
+
+/* Ciblage global du conteneur Mermaid */
+.cell-output-display .mermaid {
+  font-family: 'Recursive', monospace !important;
+  background-color: transparent !important;
+}
+
+/* 1. LES BOITES (Nœuds) */
+/* On force le beige foncé ($base2) et les bordures grises ($base01) */
+g.node rect, g.node circle, g.node polygon, g.node path {
+  fill: $base2 !important;
+  stroke: $base01 !important;
+  stroke-width: 1.5px !important;
+}
+
+/* 2. LE TEXTE DANS LES BOITES */
+/* Gris foncé ($base00) */
+g.node .label {
+  color: $base00 !important;
+  font-family: 'Recursive', monospace !important;
+  font-weight: 500;
+}
+
+/* Hack pour le texte HTML dans Mermaid (souvent utilisé par Quarto) */
+g.node .nodeLabel, g.node .label div {
+  color: $base00 !important;
+  background-color: transparent !important;
+}
+
+/* 3. LES LIENS (Flèches) */
+/* Gris clair ($base1) */
+.edgePath .path {
+  stroke: $base1 !important;
+  stroke-width: 2px !important;
+}
+
+/* Les pointes de flèches (Markers) */
+/* C'est plus technique, il faut cibler le SVG marker fill */
+#mermaid-defs marker path, 
+marker path {
+  fill: $base1 !important;
+  stroke: $base1 !important;
+}
+
+/* 4. LES FORMES SPÉCIALES (Losanges, Rond...) */
+/* Si vous utilisez des conditions {?} ou des cercles ((.)) */
+g.node polygon {
+  fill: $base3 !important; /* Fond plus clair pour les conditions */
+}
+
+/* 5. NOTES (Post-it) */
+g.note rect {
+  fill: $base3 !important;
+  stroke: $yellow !important;
+}
+g.note .label {
+  color: $base00 !important;
+}
+
+/* 6. ÉTIQUETTES SUR LES FLÈCHES (Edge Labels) */
+
+/* Couleur du texte général */
+g.edgeLabel, .edgeLabel {
+  color: $base00 !important;       /* Gris moyen */
+  fill: $base00 !important;        /* Pour le SVG pur */
+  font-family: 'Recursive', monospace !important;
+}
+
+/* Le fond du texte (Background) 
+   Il doit être de la couleur de la page ($base3) pour "effacer" le trait derrière */
+g.edgeLabel p {
+  background-color: $base3 !important; 
+  color: $base00 !important;
+  font-family: 'Recursive', monospace !important;
+  padding: 2px 4px; /* Un peu d'espace pour la lisibilité */
+  font-size: 0.9em;
+}
+
+/* Cas où Mermaid dessine un rectangle de fond (au lieu d'un span HTML) */
+g.edgeLabel rect {
+  fill: $base3 !important;
+  opacity: 1 !important; /* Force l'opacité si le thème la réduit */
+  stroke: none !important;
+}
+
+/* =========================================
+   10. WIDGET "FAKE IDE" (Explorateur de fichiers)
+   ========================================= */
+
+/* custom.scss - Section FAKE IDE AMÉLIORÉE */
+
+.ide-container {
+  display: flex;
+  /* Hauteur automatique au début (juste la liste), fixe après ouverture */
+  min-height: 100px; 
+  border: 1px solid $base1;
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  font-family: 'Recursive', sans-serif;
+  background-color: $base3;
+  transition: all 0.3s ease; /* Animation fluide à l'ouverture */
+}
+
+/* --- SIDEBAR (Volet Gauche) --- */
+.ide-sidebar {
+  /* PAR DÉFAUT : Prend toute la largeur */
+  width: 100%; 
+  background-color: $base2;
+  padding: 10px;
+  border-right: none; /* Pas de bordure tant qu'il est seul */
+  transition: width 0.3s ease; /* Animation de la largeur */
+}
+
+/* --- MAIN (Volet Droite - Caché au début) --- */
+.ide-main {
+  display: none; /* CACHÉ PAR DÉFAUT */
+  flex: 1;
+  flex-direction: column;
+  opacity: 0; /* Pour l'animation */
+  transition: opacity 0.5s ease;
+}
+
+.ide-main iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* --- ÉTAT ACTIF (Quand on a cliqué sur un fichier) --- */
+.ide-container.is-active {
+  height: 600px; /* On force la hauteur "IDE" */
+}
+
+.ide-container.is-active .ide-sidebar {
+  width: 250px; /* Se réduit à gauche */
+  border-right: 1px solid $base1;
+  overflow-y: auto;
+}
+
+.ide-container.is-active .ide-main {
+  display: flex; /* Apparaît */
+  opacity: 1;
+}
+
+/* --- RESTE DU STYLE (Boutons, Icônes...) --- */
+.ide-header-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 10px;
+}
+.ide-title { font-weight: 800; color: $base01; text-transform: uppercase; font-size: 0.75em; }
+
+.ide-download-btn {
+  font-size: 0.75em; background-color: $base3; color: $blue !important;
+  border: 1px solid $base1; padding: 2px 8px; border-radius: 4px;
+  text-decoration: none !important; font-weight: bold;
+}
+.ide-download-btn:hover { background-color: $blue; color: white !important; }
+
+/* Liste fichiers */
+ul.file-tree-list, ul.file-tree-list ul { list-style: none; padding-left: 0; margin: 0; }
+.folder ul { padding-left: 15px; border-left: 1px solid rgba(0,0,0,0.05); }
+.file a, .folder summary {
+  display: flex; align-items: center; gap: 8px; padding: 3px 0;
+  text-decoration: none; color: $base00; cursor: pointer;
+}
+.file a:hover { color: $orange !important; background: rgba(255,255,255,0.4); }
+.bi { opacity: 0.8; }

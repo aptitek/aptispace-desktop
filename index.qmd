@@ -1,0 +1,25 @@
+---
+title: "Module 1 : Algorithmes"
+---
+
+## 1. Formule Mathématique
+ 
+Voici une équation LaTeX : $E = mc^2$
+
+## 2. Diagramme Dynamique
+
+```{mermaid}
+flowchart LR
+  A[Obsidian] --> B(Quarto)
+  B --> C{Cloudflare}
+  C -->|Public| D[Étudiant]
+  C -->|Privé| E[Admin]
+```
+
+## 3. Code Interactif (Visualiseur)
+
+{{< filetree lab/TP1 >}}
+
+## 4. Notebook Jupyter
+
+{{< jupyterlite lab/notebooks/test.ipynb >}}
