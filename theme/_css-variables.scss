@@ -1,0 +1,22 @@
+/*-- scss:rules --*/
+
+// ==========================================
+// 2. CSS VARIABLES (Runtime Tokens)
+// ==========================================
+// Expose tokens to CSS for usage in JS/HTML (Viewer, IFrames...)
+
+:root {
+    --bg-color: #{$sol-base3};
+    --text-color: #{$sol-base00};
+    --sidebar-bg: #{$sol-base2};
+    --border-color: #{$sol-base2};
+    --link-color: #{$sol-blue};
+    --link-hover: #{$sol-orange};
+    --success-color: #{$sol-green};
+    --error-color: #{$sol-red};
+    --code-bg: #{$sol-base2};
+    --btn-hover: #{$sol-base2};
+
+    --font-base: #{$font-family-base};
+    --font-code: #{$font-family-code};
+}

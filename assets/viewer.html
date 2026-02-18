@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <title>Code Viewer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/solarized-light.min.css">
-    
+    <!-- Font import (Backup if not synced) -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/base16/solarized-light.min.css">
+
     <style>
-        /* --- 1. CONFIGURATION SOLARIZED --- */
+        /* --- 1. THEME VARIABLES (DEFAULTS) --- */
+        /* These will be overridden by parent theme if available */
         :root {
-            --bg-color: #fdf6e3;      /* Base3 */
-            --text-color: #657b83;    /* Base00 */
-            --border-color: #eee8d5;  /* Base2 */
+            --bg-color: #fdf6e3;
+            /* Base3 */
+            --text-color: #657b83;
+            /* Base00 */
+            --border-color: #eee8d5;
+            /* Base2 */
             --btn-bg: transparent;
             --btn-hover: #eee8d5;
+            --link-color: #268bd2;
+            --success-color: #859900;
+            --error-color: #dc322f;
+            --code-font: 'Recursive', monospace;
         }
 
         body {
@@ -22,14 +35,13 @@
             padding: 0;
             background-color: var(--bg-color);
             color: var(--text-color);
-            font-family: 'Recursive', monospace;
-            font-variation-settings: 'MONO' 1; /* Force le code */
+            font-family: var(--code-font);
+            font-variation-settings: 'MONO' 1;
         }
 
-        /* --- 2. CONTENEUR STYLE QUARTO --- */
+        /* --- 2. CONTAINER --- */
         .sourceCode {
-            margin: 0;
-            position: relative; /* Pour placer le bouton Copy */
+            position: relative;
         }
 
         pre {
@@ -38,18 +50,17 @@
             overflow: auto;
             font-size: 0.9em;
             line-height: 1.5;
-            white-space: pre-wrap;       /* Force le retour à la ligne respectueux */
-            word-break: break-word;      /* Coupe les mots trop longs (ex: URL géante) */
-            overflow-wrap: break-word;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
 
         code {
-            font-family: 'Recursive', monospace;
-            font-variation-settings: 'MONO' 1;
-            background: transparent !important; /* On laisse le body gérer le fond */
+            font-family: var(--code-font);
+            background: transparent !important;
+            /* Let body handle bg */
         }
 
-        /* --- 3. BOUTON COPIER (Native Look) --- */
+        /* --- 3. COPY BUTTON --- */
         .copy-btn {
             position: absolute;
             top: 5px;
@@ -60,6 +71,7 @@
             cursor: pointer;
             padding: 4px 8px;
             color: #93a1a1;
+            /* Base1 */
             transition: all 0.2s;
             display: flex;
             align-items: center;
@@ -69,42 +81,49 @@
         .copy-btn:hover {
             background-color: var(--btn-hover);
             color: #586e75;
+            /* Base01 */
         }
 
-        /* Icône Clipboard (SVG) */
-        .bi-clipboard { width: 14px; height: 14px; fill: currentColor; }
-        
-        /* État "Copié !" */
+        .bi-clipboard {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
         .copy-btn.copied {
-            border-color: #859900;
-            color: #859900;
+            border-color: var(--success-color);
+            color: var(--success-color);
         }
 
-        /* --- 4. MESSAGE D'ERREUR --- */
+        /* --- 4. ERROR MESSAGE --- */
         #error-msg {
             display: none;
-            color: #dc322f; /* Rouge Solarized */
+            color: var(--error-color);
             padding: 20px;
-            font-family: 'Recursive', sans-serif;
+            font-family: sans-serif;
             font-variation-settings: 'MONO' 0;
         }
     </style>
 </head>
+
 <body>
 
     <div id="error-msg"></div>
 
     <div class="sourceCode">
-        <button class="copy-btn" id="copy-btn" title="Copier le code">
+        <button class="copy-btn" id="copy-btn" title="Copy code">
             <svg class="bi-clipboard" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-                <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
-                <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                <path
+                    d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
+                <path
+                    d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" />
             </svg>
         </button>
 
-        <pre><code id="code-content">Chargement...</code></pre>
+        <pre><code id="code-content">Loading...</code></pre>
     </div>
 
+    <!-- Highlight.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
@@ -112,20 +131,41 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
 
     <script>
+        // --- THEME SYNC ---
+        // Try to pull variables from parent window (Quarto main site)
+        try {
+            if (window.parent && window.parent !== window) {
+                const parentStyle = window.parent.getComputedStyle(window.parent.document.documentElement);
+                const root = document.documentElement;
+                const varsToSync = [
+                    '--bg-color', '--text-color', '--border-color',
+                    '--link-color', '--success-color', '--error-color',
+                    '--font-code'
+                ];
+
+                varsToSync.forEach(v => {
+                    const val = parentStyle.getPropertyValue(v);
+                    if (val && val.trim() !== "") root.style.setProperty(v, val);
+                });
+            }
+        } catch (e) {
+            console.debug("Theme sync not available (likely standalone or CORS).");
+        }
+
+        // --- MAIN LOGIC ---
         const urlParams = new URLSearchParams(window.location.search);
         const fileUrl = urlParams.get('file');
         const codeEl = document.getElementById('code-content');
         const btn = document.getElementById('copy-btn');
         const errEl = document.getElementById('error-msg');
 
-        // 1. GESTION DU COPY BUTTON
+        // Copy Feature
         btn.addEventListener('click', () => {
             navigator.clipboard.writeText(codeEl.innerText).then(() => {
-                // Feedback visuel
                 const originalHTML = btn.innerHTML;
                 btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/></svg>`;
                 btn.classList.add('copied');
-                
+
                 setTimeout(() => {
                     btn.innerHTML = originalHTML;
                     btn.classList.remove('copied');
@@ -133,36 +173,34 @@
             });
         });
 
-        // 2. CHARGEMENT DU FICHIER
+        // Load File
         if (!fileUrl) {
-            errEl.innerText = "Aucun fichier sélectionné.";
+            errEl.innerText = "No file selected.";
             errEl.style.display = "block";
             codeEl.parentElement.style.display = "none";
             btn.style.display = "none";
         } else {
-            // Détection extension
             let ext = fileUrl.split('.').pop().toLowerCase();
-            // Mapping simple pour highlight.js
-            if(ext === 'js') ext = 'javascript';
-            if(ext === 'py') ext = 'python';
-            if(ext === 'md') ext = 'markdown';
-            if(ext === 'yml') ext = 'yaml';
+            // Simple mapping
+            const langMap = {
+                'js': 'javascript', 'ts': 'typescript', 'py': 'python',
+                'md': 'markdown', 'yml': 'yaml', 'sh': 'bash'
+            };
+            if (langMap[ext]) ext = langMap[ext];
 
-            // Classe pour highlight.js
             codeEl.className = `language-${ext}`;
 
             fetch(fileUrl)
                 .then(r => {
-                    if (!r.ok) throw new Error("Fichier introuvable (" + r.status + ")");
+                    if (!r.ok) throw new Error(`File not found (${r.status})`);
                     return r.text();
                 })
                 .then(text => {
                     codeEl.textContent = text;
-                    // Application de la coloration
                     hljs.highlightElement(codeEl);
                 })
                 .catch(e => {
-                    errEl.innerText = "Erreur : " + e.message;
+                    errEl.innerText = "Error: " + e.message;
                     errEl.style.display = "block";
                     codeEl.parentElement.style.display = "none";
                     btn.style.display = "none";
@@ -170,4 +208,5 @@
         }
     </script>
 </body>
+
 </html>

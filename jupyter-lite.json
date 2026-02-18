@@ -7,9 +7,6 @@
       "logo": false
     }
   },
-  "stand alone packages": {
-    "jupyterlab-solarized-theme": "latest" 
-  },
   "settings": {
     "@jupyterlab/apputils-extension:themes": {
       "theme": "JupyterLab Light"

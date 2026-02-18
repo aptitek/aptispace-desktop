@@ -1,0 +1,86 @@
+// ==========================================
+// 6. MERMAID DIAGRAMS
+// ==========================================
+
+/* Ciblage global du conteneur Mermaid */
+.cell-output-display .mermaid {
+    font-family: $font-family-code !important;
+    background-color: transparent !important;
+}
+
+/* 1. LES BOITES (Nœuds) */
+/* Force le beige foncé ($sol-base2) et les bordures grises ($sol-base01) */
+g.node rect,
+g.node circle,
+g.node polygon,
+g.node path {
+    fill: $sol-base2 !important;
+    stroke: $sol-base01 !important;
+    stroke-width: 1.5px !important;
+}
+
+/* 2. LE TEXTE DANS LES BOITES */
+/* Gris foncé ($sol-base00) */
+g.node .label {
+    color: $sol-base00 !important;
+    font-family: $font-family-code !important;
+    font-weight: 500;
+}
+
+/* Hack pour le texte HTML dans Mermaid */
+g.node .nodeLabel,
+g.node .label div {
+    color: $sol-base00 !important;
+    background-color: transparent !important;
+}
+
+/* 3. LES LIENS (Flèches) */
+/* Gris clair ($sol-base1) */
+.edgePath .path {
+    stroke: $sol-base1 !important;
+    stroke-width: 2px !important;
+}
+
+/* Les pointes de flèches (Markers) */
+#mermaid-defs marker path,
+marker path {
+    fill: $sol-base1 !important;
+    stroke: $sol-base1 !important;
+}
+
+/* 4. LES FORMES SPÉCIALES */
+g.node polygon {
+    fill: $sol-base3 !important;
+}
+
+/* 5. NOTES (Post-it) */
+g.note rect {
+    fill: $sol-base3 !important;
+    stroke: $sol-yellow !important;
+}
+
+g.note .label {
+    color: $sol-base00 !important;
+}
+
+/* 6. ÉTIQUETTES SUR LES FLÈCHES */
+g.edgeLabel,
+.edgeLabel {
+    color: $sol-base00 !important;
+    fill: $sol-base00 !important;
+    font-family: $font-family-code !important;
+}
+
+g.edgeLabel p {
+    background-color: $sol-base3 !important;
+    color: $sol-base00 !important;
+    font-family: $font-family-code !important;
+    padding: 2px 4px;
+    font-size: 0.9em;
+}
+
+g.edgeLabel rect {
+    fill: $sol-base3 !important;
+    opacity: 1 !important;
+    stroke: none !important;
+}

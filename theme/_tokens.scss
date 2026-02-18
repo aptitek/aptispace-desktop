@@ -1,0 +1,55 @@
+/*-- scss:defaults --*/
+
+// ==========================================
+// 1. DESIGN TOKENS (Source of Truth)
+// ==========================================
+
+// --- Typography ---
+$font-family-base: 'Recursive', sans-serif !default;
+$font-family-code: 'Recursive', monospace !default;
+$headings-font-weight: 800 !default;
+
+// --- Solarized Palette (Official) ---
+$sol-base03: #002b36;
+$sol-base02: #073642; // Sidebars, darker bg
+$sol-base01: #586e75; // Comments, secondary text
+$sol-base00: #657b83; // Body text
+$sol-base0: #839496;
+$sol-base1: #93a1a1;
+$sol-base2: #eee8d5; // Light background (Sidebar)
+$sol-base3: #fdf6e3; // Main background
+$sol-yellow: #b58900;
+$sol-orange: #cb4b16; // Highlight, Links Hover
+$sol-red: #dc322f; // Errors
+$sol-magenta: #d33682;
+$sol-violet: #6c71c4; // Visited links
+$sol-blue: #268bd2; // Links, Primary
+$sol-cyan: #2aa198;
+$sol-green: #859900; // Success, Active TOC
+
+// --- Semantic Mapping ---
+$body-bg: $sol-base3 !default;
+$body-color: $sol-base00 !default;
+
+$link-color: $sol-blue !default;
+$link-hover-color: $sol-orange !default;
+$link-decoration: none !default;
+
+$sidebar-bg: $sol-base2 !default;
+$sidebar-fg: $sol-base01 !default;
+
+$navbar-bg: $sol-base2 !default;
+$navbar-fg: $sol-base01 !default;
+
+$code-block-bg: $sol-base2 !default;
+$code-text-color: $sol-base01 !default;
+
+// Bootstrap Overrides
+$primary: $sol-blue !default;
+$secondary: $sol-base1 !default;
+$success: $sol-green !default;
+$info: $sol-cyan !default;
+$warning: $sol-yellow !default;
+$danger: $sol-red !default;
+$light: $sol-base2 !default;
+$dark: $sol-base02 !default;
