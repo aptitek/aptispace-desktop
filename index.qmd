@@ -22,10 +22,10 @@ flowchart LR
 - [test.ipynb](lab/TP1/test.ipynb)
 - [test.java](lab/TP1/test.java)
 - folder
-  - test.ipynb
+  - test.c
   - test.java
 :::
 
 ## 4. Notebook Jupyter
 
-[Ouvrir le notebook](lab/TP1/test.ipynb)
+[Ouvrir le notebook](lab/TP1/test.ipynb) b 

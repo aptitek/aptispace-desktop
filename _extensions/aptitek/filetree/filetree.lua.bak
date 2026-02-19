@@ -27,12 +27,12 @@ local function get_href(path, filename)
         web_path = "/" .. path
     end
 
+    if ext == ".ipynb" then
         -- Treat as fully rendered HTML file (Quarto renders .ipynb to .html)
-        -- We want to show it statically in viewer.html
+        -- We assume the .html exists in the same relative path
+        -- If file is "lab/TP1/test.ipynb", Quarto outputs "lab/TP1/test.html"
         local html_path = web_path:gsub("%.ipynb$", ".html")
-        -- URL encode path just in case
-        local safe_path = html_path:gsub(" ", "%20")
-        return "/assets/viewer.html#file=" .. safe_path .. "&mode=render"
+        return html_path
 
     elseif ext == ".py" or ext == ".java" or ext == ".js" or ext == ".ts" or ext == ".html" or ext == ".css" or
         ext == ".scss" or ext == ".json" or ext == ".xml" or ext == ".qmd" or ext == ".md" or ext == ".yml" then
@@ -54,14 +54,6 @@ local function render_item(item, frame_name, container_id)
     -- Item is a Block (Plain or Para) containing Link or Str
     -- or a BulletList (subfolder)
 
-    -- We need to check if it's a folder (has sublist) or file
-    -- But pandoc AST for BulletList is [[Blocks], [Blocks], ...]
-    -- Often: [Para(Link), BulletList(...)] is how a folder with children looks in Markdown list?
-    -- Actually:
-    -- - Folder
-    --   - Child
-    -- Is represented as one item containing [Para(Str "Folder"), BulletList(...)]
-
     local blocks = item
     local is_folder = false
     local link = nil
@@ -74,8 +66,6 @@ local function render_item(item, frame_name, container_id)
             sublist = block
         elseif block.t == "Para" or block.t == "Plain" then
             -- Check content
-            -- Usually [Link] or [Str]
-            -- We extract text or link
             pandoc.walk_block(block, {
                 Link = function(el) link = el end,
                 Str = function(el) if text == "" then text = el.text end end,
@@ -108,8 +98,6 @@ local function render_item(item, frame_name, container_id)
     else
         -- File
         if not link then
-            -- Plain text in list, maybe just a file name without link?
-            -- If no link provided, we can't really open it. Treat as disabled or just text.
             return '<li class="file"><span style="opacity:0.5"><i class="bi bi-file-earmark"></i> ' ..
                 text .. '</span></li>'
         end
@@ -120,50 +108,27 @@ local function render_item(item, frame_name, container_id)
 
         local icon = get_icon(filename)
         local final_url = get_href(path, filename)
-        local activate_js = "document.getElementById('" .. container_id .. "').classList.add('is-active')"
 
-        return '<li class="file"><a href="' ..
+        -- CLEAN HTML: No inline JS. Just data attributes.
+        return '<li class="file"><span role="button" tabindex="0" style="cursor: pointer" class="filetree-link" data-src="'
+            ..
             final_url ..
-            '" target="' ..
+            '" data-target="' ..
             frame_name ..
-            '" onclick="' .. activate_js .. '"><i class="bi ' .. icon .. '"></i> ' .. filename .. '</a></li>'
+            '"><i class="bi ' .. icon .. '"></i> ' .. filename .. '</span></li>'
     end
 
 end
 
 local function generate_zip(zip_path)
-    -- fast zip generation if not exists or force?
-    -- zip_path is like "lab/TP1.zip"
-    -- source folder is inferred as "lab/TP1" (stripping .zip)
     local source_dir = zip_path:match("(.+)%.zip$")
     if not source_dir then return end
-
-    -- Check if source dir exists? os.execute allows shell command
-    -- We'll try to execute zip. Ideally we check if it outdated.
-    -- For simplicity, we just run zip -r -u (update) or just zip -r
-    -- Quarto runs in project root usually.
-
-    -- Ensure directory for zip exists? zip command might validly handle it if parent implies?
-    -- Actually "lab/TP1.zip" -> "lab" exists presumably.
-
-    -- Command: zip -r -q {zip_path} {source_dir}
-    -- We use 'zip -FSr' if available (sync file system) or just 'zip -r'
     local cmd = string.format("zip -r -q '%s' '%s'", zip_path, source_dir)
     os.execute(cmd)
 end
 
 return {
     ["filetree"] = function(args, kwargs, meta)
-        -- This is a custom block: ::: {.filetree} ... :::
-        -- But wait, standard Div filter signature is (div)
-        -- If registered as 'filetree' in custom Lua module, it might be for a Shortcode?
-        -- The user wants "remplace l'extension actuelle".
-        -- The previous extension returned: ["filetree"] = function(args, kwargs) ... which is a Shortcode.
-        -- Shortcodes can't contain block content (like a list) easily.
-        -- So we should probably keep it as a Div filter -> `function Div(div)`
-        -- BUT the user might use it as shortcode? No, shortcode is {{< filetree >}}.
-        -- New requirement: "structure de liste Markdown simple".
-        -- This implies using a Div `::: {.filetree}`
     end,
 
     Div = function(div)
@@ -181,14 +146,10 @@ return {
                 local zip_name = zip_link:match("^.+/(.+)$") or zip_link
                 zip_html = string.format('<a href="%s" class="ide-download-btn" title="Download %s"><i class="bi bi-file-earmark-zip-fill"></i> ZIP</a>'
                     , zip_link, zip_name)
-
-                -- Attempt to generate the zip file
                 generate_zip(zip_link)
             end
 
-            -- We expect the first block to be a BulletList
             local list_content = ""
-
             for _, block in ipairs(div.content) do
                 if block.t == "BulletList" then
                     for _, item in ipairs(block.content) do
@@ -196,6 +157,52 @@ return {
                     end
                 end
             end
+
+            -- script for event delegation
+            local script = string.format([[
+<script>
+(function() {
+    var container = document.getElementById('%s');
+    if (!container) return;
+    
+    // Prevent multiple attachments if re-run
+    if (container.dataset.hasEvents) return;
+    container.dataset.hasEvents = "true";
+
+    container.addEventListener('click', function(e) {
+        var link = e.target.closest('span.filetree-link');
+        if (link) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var targetName = link.getAttribute('data-target');
+            var src = link.getAttribute('data-src');
+            
+            // Validate targeting
+            if (targetName && src) {
+                var iframe = document.getElementsByName(targetName)[0];
+                if (iframe) {
+                    iframe.src = src;
+                    
+                    // Manage active state
+                    var actives = container.querySelectorAll('.is-active');
+                    actives.forEach(function(el) { el.classList.remove('is-active'); });
+                    link.parentElement.classList.add('is-active'); // add to li, or a? original was adding to container??
+                    // Wait, original logic: document.getElementById(container_id).classList.add('is-active') ?? 
+                    // No, that doesn't make sense. It was probably adding to the link or LI.
+                    // Actually, the original code said: 
+                    // document.getElementById('" .. container_id .. "').classList.add('is-active')
+                    // That adds 'is-active' to the CONTAINER?? That seems wrong for highlighting a file.
+                    // Let's assume we want to highlight the selected file.
+                    link.classList.add('is-active');
+                }
+            }
+            return false;
+        }
+    });
+})();
+</script>
+]]           , id)
 
             local html = string.format([[
 <div class="ide-container" id="%s">
@@ -212,7 +219,8 @@ return {
     <iframe name="%s" src="about:blank" onload="this.style.opacity=1"></iframe>
   </div>
 </div>
-]]           , id, title, zip_html, list_content, frame_name)
+%s
+]]           , id, title, zip_html, list_content, frame_name, script)
 
             return pandoc.RawBlock("html", html)
         end
