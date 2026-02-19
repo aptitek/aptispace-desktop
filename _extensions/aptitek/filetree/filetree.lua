@@ -27,6 +27,16 @@ local function get_href(path, filename)
         web_path = "/" .. path
     end
 
+    local is_binary = false
+    local f = io.open(path, "rb")
+    if f then
+        local bytes = f:read(1024)
+        if bytes and bytes:find("\0") then
+            is_binary = true
+        end
+        f:close()
+    end
+
     if ext == ".ipynb" then
         -- Treat as fully rendered HTML file (Quarto renders .ipynb to .html)
         -- We want to show it statically in viewer.html
@@ -35,8 +45,7 @@ local function get_href(path, filename)
         local safe_path = html_path:gsub(" ", "%20")
         return "/assets/viewer.html#file=" .. safe_path .. "&mode=render"
 
-    elseif ext == ".py" or ext == ".java" or ext == ".js" or ext == ".ts" or ext == ".html" or ext == ".css" or
-        ext == ".scss" or ext == ".json" or ext == ".xml" or ext == ".qmd" or ext == ".md" or ext == ".yml" then
+    elseif is_binary == false then
         -- Use static viewer
         -- Need to URL encode the path
         -- Lua doesn't have built-in urlencode, doing simple one or minimal
@@ -121,35 +130,29 @@ local function render_item(item, frame_name, container_id)
 
         local icon = get_icon(filename)
         local final_url = get_href(path, filename)
-        local activate_js = "event.stopPropagation(); document.getElementById('" ..
-            container_id .. "').classList.add('is-active')"
 
-        return '<li class="file"><a href="' ..
-            final_url ..
-            '" target="' ..
-            frame_name ..
-            '" onclick="' .. activate_js .. '"><i class="bi ' .. icon .. '"></i> ' .. filename .. '</a></li>'
+        -- Use data attributes for the event listener
+        return string.format(
+            '<li class="file"><a href="#" class="filetree-link" data-url="%s" data-frame="%s" data-container="%s"><i class="bi %s"></i> %s</a></li>'
+            ,
+            final_url, frame_name, container_id, icon, filename
+        )
     end
 
 end
 
-local function generate_zip(zip_path)
-    -- fast zip generation if not exists or force?
-    -- zip_path is like "lab/TP1.zip"
-    -- source folder is inferred as "lab/TP1" (stripping .zip)
-    local source_dir = zip_path:match("(.+)%.zip$")
-    if not source_dir then return end
+local function generate_zip(zip_path, source_dir)
+    -- zip_path: where to save the zip (e.g., "_site/lab/TP1.zip")
+    -- source_dir: what to zip (e.g., "lab/TP1")
 
-    -- Check if source dir exists? os.execute allows shell command
-    -- We'll try to execute zip. Ideally we check if it outdated.
-    -- For simplicity, we just run zip -r -u (update) or just zip -r
-    -- Quarto runs in project root usually.
-
-    -- Ensure directory for zip exists? zip command might validly handle it if parent implies?
-    -- Actually "lab/TP1.zip" -> "lab" exists presumably.
+    -- Ensure the directory for the zip exists
+    local zip_dir = zip_path:match("(.+)/[^/]+$")
+    if zip_dir then
+        os.execute("mkdir -p '" .. zip_dir .. "'")
+    end
 
     -- Command: zip -r -q {zip_path} {source_dir}
-    -- We use 'zip -FSr' if available (sync file system) or just 'zip -r'
+    -- We assume source_dir is relative to project root
     local cmd = string.format("zip -r -q '%s' '%s'", zip_path, source_dir)
     os.execute(cmd)
 end
@@ -184,8 +187,23 @@ return {
                 zip_html = string.format('<a href="%s" class="ide-download-btn" title="Download %s"><i class="bi bi-file-earmark-zip-fill"></i> ZIP</a>'
                     , zip_link, zip_name)
 
-                -- Attempt to generate the zip file
-                generate_zip(zip_link)
+                -- Determine output path in _site
+                -- zip_link is like "lab/TP1.zip"
+                -- we want to write to "_site/lab/TP1.zip"
+                local site_zip_path = "_site/" .. zip_link
+
+                -- Check if it exists in _site
+                local f = io.open(site_zip_path, "r")
+                if f ~= nil then
+                    io.close(f)
+                else
+                    -- source folder is inferred from zip_link (stripping .zip)
+                    -- e.g. "lab/TP1.zip" -> "lab/TP1"
+                    local source_dir = zip_link:match("(.+)%.zip$")
+                    if source_dir then
+                        generate_zip(site_zip_path, source_dir)
+                    end
+                end
             end
 
             -- We expect the first block to be a BulletList
@@ -213,8 +231,38 @@ return {
   <div class="ide-main">
     <iframe name="%s" src="about:blank" onload="this.style.opacity=1"></iframe>
   </div>
+  <script>
+    (function() {
+        var container = document.getElementById('%s');
+        if (!container) return;
+        var links = container.querySelectorAll('.filetree-link');
+        links.forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                var url = this.getAttribute('data-url');
+                var frameName = this.getAttribute('data-frame');
+                var containerId = this.getAttribute('data-container');
+                
+                console.log('File clicked:', url);
+                
+                var container = document.getElementById(containerId);
+                if (container) container.classList.add('is-active');
+                
+                var iframe = document.querySelector('iframe[name="' + frameName + '"]');
+                if (iframe) {
+                    iframe.src = url;
+                    console.log('Iframe src set to', url);
+                } else {
+                    console.error('Iframe not found:', frameName);
+                }
+            });
+        });
+    })();
+  </script>
 </div>
-]]           , id, title, zip_html, list_content, frame_name)
+]]           , id, title, zip_html, list_content, frame_name, id)
 
             return pandoc.RawBlock("html", html)
         end

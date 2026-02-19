@@ -35,7 +35,7 @@ website:
 format:
   html:
     theme:
-      - cosmo        # On garde la structure de base propre
+      - solar        # On garde la structure de base propre
       - theme/theme.scss
     mainfont: "Recursive"
     monofont: "Recursive"
@@ -54,6 +54,8 @@ format:
     # Injection pour bloquer les robots d'indexation
     header-includes: |
       <meta name="robots" content="noindex, nofollow">
+
+    include-after-body: assets/fix_links.html
 
 typst:
     toc: true
