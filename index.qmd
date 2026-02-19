@@ -32,12 +32,7 @@ flowchart LR
 
 ## 5. Card
 
-::: {.card .bg-danger}
-::: {.card-header}
-Header
-:::
-::: {.card-body}
-#### Title{.card-title}
-Test
-:::
+::: {.info header="Header"}
+#### Title
+Text
 :::

@@ -7,7 +7,8 @@ project:
     - "assets/logo.svg"
 
 filters:
-  - _extensions/aptitek/filetree/filetree.lua
+  - .filters/filetree.lua
+  - .filters/card.lua
 
 website:
   title: "Développement Desktop"
@@ -36,7 +37,7 @@ format:
   html:
     theme:
       - solar        # On garde la structure de base propre
-      - theme/theme.scss
+      - .theme/theme.scss
     mainfont: "Recursive"
     monofont: "Recursive"
     # Active la coloration syntaxique Solarized native pour le code
