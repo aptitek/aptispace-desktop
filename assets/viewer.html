@@ -275,37 +275,103 @@
         });
 
         // Load File
+        const mode = urlParams.get('mode');
+        const renderEl = document.createElement('div');
+        renderEl.id = 'render-content';
+        renderEl.style.display = 'none';
+        // Add minimal padding similar to pre
+        renderEl.style.padding = '15px';
+        renderEl.style.maxWidth = '100%';
+        renderEl.style.overflowX = 'auto';
+        document.body.appendChild(renderEl);
+
         if (!fileUrl) {
             errEl.innerText = "No file selected.";
             errEl.style.display = "block";
             codeEl.parentElement.style.display = "none";
             btn.style.display = "none";
         } else {
-            let ext = fileUrl.split('.').pop().toLowerCase();
-            // Simple mapping
-            const langMap = {
-                'js': 'javascript', 'ts': 'typescript', 'py': 'python',
-                'md': 'markdown', 'yml': 'yaml', 'sh': 'bash'
-            };
-            if (langMap[ext]) ext = langMap[ext];
+            if (mode === 'render') {
+                // Static Render Mode
+                codeEl.parentElement.style.display = 'none';
+                btn.style.display = 'none';
+                renderEl.style.display = 'block';
 
-            codeEl.className = `language-${ext}`;
+                fetch(fileUrl)
+                    .then(r => {
+                        if (!r.ok) throw new Error(`File not found (${r.status})`);
+                        return r.text();
+                    })
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
 
-            fetch(fileUrl)
-                .then(r => {
-                    if (!r.ok) throw new Error(`File not found (${r.status})`);
-                    return r.text();
-                })
-                .then(text => {
-                    codeEl.textContent = text;
-                    hljs.highlightElement(codeEl);
-                })
-                .catch(e => {
-                    errEl.innerText = "Error: " + e.message;
-                    errEl.style.display = "block";
-                    codeEl.parentElement.style.display = "none";
-                    btn.style.display = "none";
-                });
+                        // Extract main content
+                        const mainContent = doc.querySelector('main.content') || doc.querySelector('#quarto-document-content') || doc.body;
+
+                        // Inject HTML directly
+                        // This strips <script> tags execution usually
+                        renderEl.innerHTML = mainContent.innerHTML;
+
+                        // Copy Stylesheets from the fetched document to preserve look
+                        const links = doc.querySelectorAll('link[rel="stylesheet"]');
+                        links.forEach(link => {
+                            // Check if already exists? or just append
+                            // Fix relative hrefs
+                            const href = link.getAttribute('href');
+                            if (href && !href.startsWith('http') && !href.startsWith('//')) {
+                                // Resolve relative to fileUrl base
+                                const baseUrl = fileUrl.substring(0, fileUrl.lastIndexOf('/') + 1);
+                                // Simple concat if not starting with /
+                                if (!href.startsWith('/')) {
+                                    link.href = baseUrl + href;
+                                }
+                            }
+                            document.head.appendChild(link);
+                        });
+
+                        // Optional: Fix relative links in content? 
+                        const baseUrl = fileUrl.substring(0, fileUrl.lastIndexOf('/') + 1);
+                        if (baseUrl) {
+                            const base = document.createElement('base');
+                            base.href = baseUrl;
+                            document.head.appendChild(base);
+                        }
+                    })
+                    .catch(e => {
+                        errEl.innerText = "Error loading render: " + e.message;
+                        errEl.style.display = "block";
+                        renderEl.style.display = "none";
+                    });
+
+            } else {
+                // Code View Mode
+                let ext = fileUrl.split('.').pop().toLowerCase();
+                // Simple mapping
+                const langMap = {
+                    'js': 'javascript', 'ts': 'typescript', 'py': 'python',
+                    'md': 'markdown', 'yml': 'yaml', 'sh': 'bash'
+                };
+                if (langMap[ext]) ext = langMap[ext];
+
+                codeEl.className = `language-${ext}`;
+
+                fetch(fileUrl)
+                    .then(r => {
+                        if (!r.ok) throw new Error(`File not found (${r.status})`);
+                        return r.text();
+                    })
+                    .then(text => {
+                        codeEl.textContent = text;
+                        hljs.highlightElement(codeEl);
+                    })
+                    .catch(e => {
+                        errEl.innerText = "Error: " + e.message;
+                        errEl.style.display = "block";
+                        codeEl.parentElement.style.display = "none";
+                        btn.style.display = "none";
+                    });
+            }
         }
 
         // Handle hash changes

@@ -27,6 +27,7 @@ local function get_href(path, filename)
         web_path = "/" .. path
     end
 
+    if ext == ".ipynb" then
         -- Treat as fully rendered HTML file (Quarto renders .ipynb to .html)
         -- We want to show it statically in viewer.html
         local html_path = web_path:gsub("%.ipynb$", ".html")
@@ -120,7 +121,8 @@ local function render_item(item, frame_name, container_id)
 
         local icon = get_icon(filename)
         local final_url = get_href(path, filename)
-        local activate_js = "document.getElementById('" .. container_id .. "').classList.add('is-active')"
+        local activate_js = "event.stopPropagation(); document.getElementById('" ..
+            container_id .. "').classList.add('is-active')"
 
         return '<li class="file"><a href="' ..
             final_url ..
