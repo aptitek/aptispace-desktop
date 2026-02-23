@@ -7,6 +7,7 @@ project:
     - "assets/logo.svg"
 
 filters:
+  - download-fonts
   - filetree
   - card
 
@@ -61,8 +62,9 @@ format:
   typst:
     toc: true
     number-sections: true
-    # On garde la police Recursive pour l'identité visuelle
-    mainfont: "Recursive"
+    # On utilise la police Recursive téléchargée localement
+    font-paths: ["fonts"]
+    mainfont: "Recursive Sans Linear"
     # On garde le style "propre" (noir sur blanc) pour l'économie d'encre
     # Si vous voulez vraiment un PDF Solarized, on peut changer, 
     # mais je déconseille pour l'impression des élèves.
