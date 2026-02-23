@@ -5,6 +5,9 @@ set -e
 # Specify the version of Quarto to use
 QUARTO_VERSION="1.4.550"
 
+echo "script version : 1.1"
+echo "Quarto version : ${QUARTO_VERSION}"
+
 echo "Downloading Quarto v${QUARTO_VERSION}..."
 curl -L -o quarto.tar.gz "https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.tar.gz"
 
