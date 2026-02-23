@@ -7,8 +7,8 @@ project:
     - "assets/logo.svg"
 
 filters:
-  - .filters/filetree.lua
-  - .filters/card.lua
+  - filetree
+  - card
 
 website:
   title: "Développement Desktop"
@@ -33,10 +33,6 @@ website:
           - cours/0.Install.qmd
           - cours/1.Java.qmd
 
-execute:
-  freeze: true
-  enabled: false
-
 format:
   html:
     theme:
@@ -54,7 +50,6 @@ format:
       caption: "Voir le code source"
     mermaid:
       theme: neutral
-    mermaid-format: js
     html-math-method: katex
     
     # Injection pour bloquer les robots d'indexation
