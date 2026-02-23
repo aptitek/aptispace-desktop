@@ -30,6 +30,8 @@ jobs:
 
       - name: Render Quarto Website & PDFs
         run: quarto render
+        env:
+          QUARTO_CHROMIUM_HEADLESS_MODE: new
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
