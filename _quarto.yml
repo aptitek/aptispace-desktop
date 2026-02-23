@@ -58,7 +58,7 @@ format:
 
     include-after-body: assets/fix_links.html
 
-typst:
+  typst:
     toc: true
     number-sections: true
     # On garde la police Recursive pour l'identité visuelle
