@@ -50,6 +50,7 @@ format:
       caption: "Voir le code source"
     mermaid:
       theme: neutral
+    mermaid-format: js
     html-math-method: katex
     
     # Injection pour bloquer les robots d'indexation

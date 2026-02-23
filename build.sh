@@ -5,7 +5,7 @@ set -e
 # Specify the version of Quarto to use
 QUARTO_VERSION="1.6.39"
 
-echo "script version : 1.3"
+echo "script version : 1.4"
 echo "Quarto version : ${QUARTO_VERSION}"
 
 echo "Downloading Quarto v${QUARTO_VERSION}..."
@@ -17,10 +17,6 @@ tar -zxvf quarto.tar.gz -C .quarto-cli --strip-components=1
 
 # Add Quarto to PATH so 'quarto render' works smoothly
 export PATH="${PWD}/.quarto-cli/bin:${PATH}"
-
-# Install chromium for Mermaid diagram PDF snapshots
-echo "Installing chromium..."
-quarto install tool chromium
 
 # Install zip manually without sudo (Cloudflare Pages environment)
 echo "Installing zip..."
