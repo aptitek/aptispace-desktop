@@ -5,7 +5,7 @@ set -e
 # Specify the version of Quarto to use
 QUARTO_VERSION="1.6.39"
 
-echo "script version : 1.4"
+echo "script version : 1.5"
 echo "Quarto version : ${QUARTO_VERSION}"
 
 echo "Downloading Quarto v${QUARTO_VERSION}..."
