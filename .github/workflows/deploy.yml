@@ -22,9 +22,6 @@ jobs:
         with:
           version: 1.6.39
 
-      - name: Install Chromium for PDF Mermaid Rendering
-        run: quarto install tool chromium
-
       - name: Install Zip (For Filetree Lua Filter)
         run: sudo apt-get update && sudo apt-get install -y zip
 
