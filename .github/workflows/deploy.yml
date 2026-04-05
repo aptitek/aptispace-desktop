@@ -31,7 +31,7 @@ jobs:
           QUARTO_CHROMIUM_HEADLESS_MODE: new
           CHROME_PATH: /usr/bin/google-chrome
           QT_QPA_PLATFORM: offscreen
-          QUARTO_CHROMIUM_EXTRA_ARGS: "--no-sandbox"
+          QUARTO_CHROMIUM_EXTRA_ARGS: "--no-sandbox,--disable-dev-shm-usage,--disable-gpu,--disable-software-rasterizer"
           QUARTO_PRINT_STACK: true
           QUARTO_LOG_LEVEL: debug
 
