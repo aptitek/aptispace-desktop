@@ -35,5 +35,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: test # <-- IMPORTANT: REPLACE WITH YOUR CLOUDFLARE PAGES PROJECT NAME
+          projectName: aptitek-desktop # <-- IMPORTANT: REPLACE WITH YOUR CLOUDFLARE PAGES PROJECT NAME
           directory: _site
