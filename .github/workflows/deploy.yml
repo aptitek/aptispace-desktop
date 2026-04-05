@@ -27,11 +27,8 @@ jobs:
 
       - name: Render Quarto Website & PDFs
         run: quarto render
-        timeout-minutes: 2
+        timeout-minutes: 5
         env:
-          QUARTO_CHROMIUM_HEADLESS_MODE: new
-          CHROME_PATH: /usr/bin/google-chrome
-          QT_QPA_PLATFORM: offscreen
           QUARTO_CHROMIUM_EXTRA_ARGS: "--no-sandbox --disable-dev-shm-usage --disable-gpu"
           QUARTO_PRINT_STACK: true
           QUARTO_LOG_LEVEL: debug
