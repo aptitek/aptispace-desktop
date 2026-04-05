@@ -1,13 +1,13 @@
 project:
   type: website
   output-dir: _site
+  pre-render: bash _extensions/aptitek/download-fonts/download_fonts.sh
   resources:
     - "lab/**"
     - "assets/viewer.html"
     - "assets/logo.svg"
 
 filters:
-  - download-fonts
   - filetree
   - card
 
@@ -62,10 +62,10 @@ format:
   typst:
     toc: true
     number-sections: true
-    # On utilise la police Recursive téléchargée localement
-    font-paths: ["fonts"]
+    font-paths:
+      - "fonts"
+      - "cours/fonts"
+      - "lab/notebooks/fonts"
+      - "lab/TP1/fonts"
     mainfont: "Recursive Sans Linear"
-    # On garde le style "propre" (noir sur blanc) pour l'économie d'encre
-    # Si vous voulez vraiment un PDF Solarized, on peut changer, 
-    # mais je déconseille pour l'impression des élèves.
     papersize: a4
