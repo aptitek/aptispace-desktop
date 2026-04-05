@@ -35,9 +35,8 @@ jobs:
           QUARTO_LOG_LEVEL: debug
 
       - name: Deploy to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
+        uses: cloudflare/wrangler-action@v3 
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: aptitek-desktop # <-- IMPORTANT: REPLACE WITH YOUR CLOUDFLARE PAGES PROJECT NAME
-          directory: _site
+          command: pages deploy _site --project-name=aptitek-desktop # <-- IMPORTANT: REPLACE WITH YOUR CLOUDFLARE PAGES PROJECT NAME
