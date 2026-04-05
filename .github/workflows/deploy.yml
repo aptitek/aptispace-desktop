@@ -31,6 +31,8 @@ jobs:
           QUARTO_CHROMIUM_HEADLESS_MODE: new
           CHROME_PATH: /usr/bin/google-chrome
           QT_QPA_PLATFORM: offscreen
+          QUARTO_PRINT_STACK: true
+          QUARTO_LOG_LEVEL: debug
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1

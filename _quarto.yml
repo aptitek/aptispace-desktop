@@ -64,8 +64,5 @@ format:
     number-sections: true
     font-paths:
       - "fonts"
-      - "cours/fonts"
-      - "lab/notebooks/fonts"
-      - "lab/TP1/fonts"
     mainfont: "Recursive Sans Linear"
     papersize: a4
