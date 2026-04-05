@@ -33,6 +33,8 @@ jobs:
           CHROME_PATH: /usr/bin/google-chrome
           QT_QPA_PLATFORM: offscreen
           QUARTO_CHROMIUM_EXTRA_ARGS: "--no-sandbox --disable-dev-shm-usage --disable-gpu"
+          QUARTO_PRINT_STACK: true
+          QUARTO_LOG_LEVEL: debug
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3 
