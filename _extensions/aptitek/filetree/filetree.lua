@@ -206,8 +206,26 @@ return {
                 end
             end
 
-            -- We expect the first block to be a BulletList
             local list_content = ""
+
+            if quarto.doc.is_format("typst") then
+                local link_text = title
+                if not title or title == "EXPLORATEUR" then
+                    if zip_link then
+                        link_text = zip_link:match("^.+/(.+)$") or zip_link
+                    else
+                        link_text = "Filetree"
+                    end
+                end
+
+                if zip_link then
+                    return pandoc.Para({
+                        pandoc.Link(pandoc.Str(link_text), zip_link)
+                    })
+                else
+                    return pandoc.Para({ pandoc.Str(link_text) })
+                end
+            end
 
             for _, block in ipairs(div.content) do
                 if block.t == "BulletList" then

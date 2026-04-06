@@ -1,6 +1,9 @@
+cloudflare-project: "aptitek-desktop"
+
 project:
   type: website
   output-dir: _site
+
   pre-render: bash _extensions/aptitek/download-fonts/download_fonts.sh
   resources:
     - "lab/**"
@@ -16,6 +19,7 @@ website:
   # DÉSACTIVER l'indexation (Anti-Google)
   search: false
   site-url: "https://desktop.apti.space"
+
   
   sidebar:
     # --- CONFIGURATION BRANDING ---

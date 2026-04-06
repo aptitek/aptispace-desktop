@@ -35,10 +35,18 @@ jobs:
           QUARTO_CHROMIUM_EXTRA_ARGS: "--no-sandbox --disable-dev-shm-usage --disable-gpu"
           QUARTO_PRINT_STACK: true
           QUARTO_LOG_LEVEL: debug
+          
+      - name: Extract Project Name from _quarto.yml
+        id: extract_project
+        run: |
+          PROJECT_NAME=$(grep "cloudflare-project:" _quarto.yml | awk '{print $2}' | tr -d '"' | tr -d "'")
+          echo "PROJECT_NAME=$PROJECT_NAME" >> $GITHUB_ENV
+
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3 
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy _site --project-name=aptitek-desktop # <-- IMPORTANT: REPLACE WITH YOUR CLOUDFLARE PAGES PROJECT NAME
+          command: pages deploy _site --project-name=${{ env.PROJECT_NAME }}
+
