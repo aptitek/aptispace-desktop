@@ -8,9 +8,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-22.04
-    # On force l'exécution dans un conteneur Ubuntu 22.04 totalement vierge
-    container: ubuntu:22.04
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       deployments: write
@@ -19,35 +17,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Prepare minimal container
-        run: apt-get update && apt-get install -y curl sudo wget nodejs
-
       - name: Install Quarto
         uses: quarto-dev/quarto-actions/setup@v2
         with:
           version: 1.6.39
 
-      - name: Install Zip (For Filetree Lua Filter)
-        run: sudo apt-get update && sudo apt-get install -y zip
-
-      - name: Install System Dependencies for Chromium
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libnss3 libnspr4 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 \
-            libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
-            libgbm1 libasound2 libgtk-3-0 libxss1 libxshmfence1 \
-            fonts-liberation libappindicator3-1 libcairo2 libpango-1.0-0 \
-            libpangocairo-1.0-0 libx11-xcb1 libxcursor1 libxi6 libxrender1 libxtst6
-
       - name: Install Google Chrome Native
         run: |
-          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt-get update
+          wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
           sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
 
       - name: Render Quarto Website & PDFs
         run: quarto render
-        timeout-minutes: 2
+        timeout-minutes: 5 
         env:
           QUARTO_CHROMIUM_EXTRA_ARGS: "--no-sandbox --disable-dev-shm-usage --disable-gpu"
           QUARTO_PRINT_STACK: true
