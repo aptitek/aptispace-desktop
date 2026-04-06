@@ -28,8 +28,7 @@ jobs:
       - name: Purge native GitHub browsers
         run: |
           sudo apt-get purge -y google-chrome-stable chromium-browser
-          sudo apt-get autoremove -y
-          sudo rm -rf /usr/bin/google-chrome
+          sudo rm -rf /usr/bin/chromium-browser
 
       - name: Install System Dependencies for Chromium
         run: |
