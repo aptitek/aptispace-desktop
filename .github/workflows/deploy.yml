@@ -40,16 +40,15 @@ jobs:
             fonts-liberation libappindicator3-1 libcairo2 libpango-1.0-0 \
             libpangocairo-1.0-0 libx11-xcb1 libxcursor1 libxi6 libxrender1 libxtst6
 
-      - name: Setup Chrome
-        uses: browser-actions/setup-chrome@v1
-        with:
-          chrome-version: stable
+      - name: Install Google Chrome Native
+        run: |
+          wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+          sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
 
       - name: Render Quarto Website & PDFs
         run: quarto render
         timeout-minutes: 2
         env:
-          CHROME_PATH: ${{ steps.install-chrome.outputs.chrome-path }}
           QUARTO_CHROMIUM_EXTRA_ARGS: "--no-sandbox --disable-dev-shm-usage --disable-gpu"
           QUARTO_PRINT_STACK: true
           QUARTO_LOG_LEVEL: debug
