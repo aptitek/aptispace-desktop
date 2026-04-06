@@ -1,4 +1,4 @@
-cloudflare-project: "aptitek-desktop"
+cloudflare-project: "desktop-aptispace"
 
 project:
   type: website
@@ -7,8 +7,7 @@ project:
   pre-render: bash _extensions/aptitek/download-fonts/download_fonts.sh
   resources:
     - "lab/**"
-    - "assets/viewer.html"
-    - "assets/logo.svg"
+    - "assets/**"
 
 filters:
   - filetree
@@ -30,13 +29,7 @@ website:
     style: "docked"
     search: false
     
-    contents:
-      - section: "Introduction"
-        contents: index.qmd
-      - section: "Chapitres"
-        contents: 
-          - cours/0.Install.qmd
-          - cours/1.Java.qmd
+    contents: auto
 
 format:
   html:
