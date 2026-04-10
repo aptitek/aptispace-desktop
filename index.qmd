@@ -8,7 +8,7 @@ Voici une équation LaTeX : $E = mc^2$
 
 ## 2. Diagramme Dynamique
 
-```mermaid
+```{mermaid}
 flowchart LR
   A[Obsidian] --> B(Quarto)
   B --> C{Cloudflare}
