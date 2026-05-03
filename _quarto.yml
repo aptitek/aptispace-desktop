@@ -12,6 +12,7 @@ project:
 filters:
   - filetree
   - card
+  - timeline
 
 website:
   title: "Développement Desktop"
@@ -23,7 +24,7 @@ website:
   sidebar:
     # --- CONFIGURATION BRANDING ---
     logo: "assets/logo.svg"          # Chemin vers l'image
-    logo-href: "https://aptitek.io"  # Redirection externe vers votre site
+    logo-href: "/"
     logo-alt: "Aptitek"              # Texte alternatif pour l'accessibilité
     # ------------------------------
     style: "docked"

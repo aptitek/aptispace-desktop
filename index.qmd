@@ -36,3 +36,18 @@ flowchart LR
 #### Title
 Modified text ! 
 :::
+
+## 6. Timeline
+
+::: {.timeline .vertical}
+::: {.event data-label="Jan 2023"}
+### Étape 1 : Le Début
+Une superbe photo
+Et des explications longues.
+:::
+
+::: {.event data-label="Mar 2023"}
+### Étape 2 : L'Alternance
+Ce point sera à droite en HTML et PDF.
+:::
+:::
