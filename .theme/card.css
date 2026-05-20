@@ -2,93 +2,55 @@
    PREMIUM THEMED WINDOW CARD SYSTEM (Vanilla CSS)
    ========================================================================== */
 
-.ui-window {
-    /* Default Solarized Light Tokens */
-    --ui-window-bg: var(--bg-color, #fdf6e3);
-    --ui-window-border: rgba(88, 110, 117, 0.12);
-    --ui-window-shadow: 0 4px 12px rgba(0, 43, 54, 0.03);
-    --ui-window-shadow-hover: 0 8px 24px rgba(0, 43, 54, 0.05);
-    --ui-window-border-hover: rgba(147, 161, 161, 0.4);
+.card-window {
+    /* Map Component Variables Directly to Global Semantic UI Tokens */
+    --card-window-bg: var(--card-bg, #fdf6e3);
+    --card-window-border: var(--card-border, rgba(88, 110, 117, 0.12));
+    --card-window-shadow: var(--card-shadow, 0 4px 12px rgba(0, 43, 54, 0.03));
+    --card-window-shadow-hover: var(--card-shadow-hover, 0 8px 24px rgba(0, 43, 54, 0.05));
+    --card-window-border-hover: var(--card-border-hover, rgba(147, 161, 161, 0.4));
     
-    --ui-window-header-bg: var(--sidebar-bg, #eee8d5);
-    --ui-window-header-border: rgba(88, 110, 117, 0.08);
+    --card-window-header-bg: var(--card-header-bg, #eee8d5);
+    --card-window-header-border: var(--card-header-border, rgba(88, 110, 117, 0.08));
     
-    --ui-window-tab-active-bg: var(--bg-color, #fdf6e3);
-    --ui-window-tab-active-color: var(--sol-base01, #586e75);
-    --ui-window-tab-active-border: rgba(88, 110, 117, 0.08);
-    --ui-window-tab-inactive-color: var(--sol-base1, #93a1a1);
-    --ui-window-tab-hover-bg: rgba(88, 110, 117, 0.03);
+    --card-window-tab-active-bg: var(--card-tab-active-bg, #fdf6e3);
+    --card-window-tab-active-color: var(--card-tab-active-color, #586e75);
+    --card-window-tab-active-border: var(--card-tab-active-border, rgba(88, 110, 117, 0.08));
+    --card-window-tab-inactive-color: var(--card-tab-inactive-color, #93a1a1);
+    --card-window-tab-hover-bg: var(--card-tab-hover-bg, rgba(88, 110, 117, 0.03));
 
     border-radius: 8px !important;
     overflow: hidden !important;
     margin-bottom: 2rem !important;
     position: relative !important;
-    background-color: var(--ui-window-bg) !important;
-    border: 1px solid var(--ui-window-border) !important;
-    box-shadow: var(--ui-window-shadow) !important;
+    background-color: var(--card-window-bg) !important;
+    border: 1px solid var(--card-window-border) !important;
+    box-shadow: var(--card-window-shadow) !important;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
-.ui-window:hover {
-    box-shadow: var(--ui-window-shadow-hover) !important;
-    border-color: var(--ui-window-border-hover) !important;
-}
-
-/* --- EXPLICIT DARK THEME & AUTO SYSTEM PREFERENCES --- */
-.ui-window.dark,
-.dark .ui-window {
-    --ui-window-bg: var(--sol-base03, #002b36);
-    --ui-window-border: var(--sol-base02, #073642);
-    --ui-window-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    --ui-window-shadow-hover: 0 12px 36px rgba(0, 0, 0, 0.22);
-    --ui-window-border-hover: var(--sol-base01, #586e75);
-    
-    --ui-window-header-bg: var(--sol-base02, #073642);
-    --ui-window-header-border: rgba(147, 161, 161, 0.1);
-    
-    --ui-window-tab-active-bg: var(--sol-base03, #002b36);
-    --ui-window-tab-active-color: var(--sol-base1, #93a1a1);
-    --ui-window-tab-active-border: rgba(147, 161, 161, 0.1);
-    --ui-window-tab-inactive-color: var(--sol-base01, #586e75);
-    --ui-window-tab-hover-bg: rgba(147, 161, 161, 0.03);
-}
-
-@media (prefers-color-scheme: dark) {
-    .ui-window:not(.light) {
-        --ui-window-bg: var(--sol-base03, #002b36);
-        --ui-window-border: var(--sol-base02, #073642);
-        --ui-window-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-        --ui-window-shadow-hover: 0 12px 36px rgba(0, 0, 0, 0.22);
-        --ui-window-border-hover: var(--sol-base01, #586e75);
-        
-        --ui-window-header-bg: var(--sol-base02, #073642);
-        --ui-window-header-border: rgba(147, 161, 161, 0.1);
-        
-        --ui-window-tab-active-bg: var(--sol-base03, #002b36);
-        --ui-window-tab-active-color: var(--sol-base1, #93a1a1);
-        --ui-window-tab-active-border: rgba(147, 161, 161, 0.1);
-        --ui-window-tab-inactive-color: var(--sol-base01, #586e75);
-        --ui-window-tab-hover-bg: rgba(147, 161, 161, 0.03);
-    }
+.card-window:hover {
+    box-shadow: var(--card-window-shadow-hover) !important;
+    border-color: var(--card-window-border-hover) !important;
 }
 
 /* --- WINDOW HEADER & CONTROL DOTS --- */
-.ui-window .card-header,
-.ui-window .nav-tabs,
-.ui-window-header {
+.card-window .card-header,
+.card-window .nav-tabs,
+.card-window-header {
     display: flex !important;
     align-items: center !important;
     height: 38px !important;
     padding: 0 16px !important;
     user-select: none !important;
-    background-color: var(--ui-window-header-bg) !important;
-    border-bottom: 1px solid var(--ui-window-header-border) !important;
+    background-color: var(--card-window-header-bg) !important;
+    border-bottom: 1px solid var(--card-window-header-border) !important;
     position: relative !important;
 }
 
-.ui-window .card-header::before,
-.ui-window .nav-tabs::before,
-.ui-window-header::before {
+.card-window .card-header::before,
+.card-window .nav-tabs::before,
+.card-window-header::before {
     content: "" !important;
     display: inline-block !important;
     flex-shrink: 0 !important;
@@ -102,7 +64,7 @@
 }
 
 /* --- TAB STYLES --- */
-.ui-window .nav-link {
+.card-window .nav-link {
     display: flex !important;
     align-items: center !important;
     gap: 8px !important;
@@ -119,32 +81,32 @@
     background-color: transparent !important;
     border: 1px solid transparent !important;
     border-bottom: none !important;
-    color: var(--ui-window-tab-inactive-color) !important;
+    color: var(--card-window-tab-inactive-color) !important;
 }
 
-.ui-window .nav-link::before {
-    color: var(--ui-window-tab-inactive-color) !important;
+.card-window .nav-link::before {
+    color: var(--card-window-tab-inactive-color) !important;
     opacity: 0.7;
 }
 
-.ui-window .nav-link:hover {
-    background-color: var(--ui-window-tab-hover-bg) !important;
-    color: var(--ui-window-tab-active-color) !important;
+.card-window .nav-link:hover {
+    background-color: var(--card-window-tab-hover-bg) !important;
+    color: var(--card-window-tab-active-color) !important;
 }
 
-.ui-window .nav-link.active,
-.ui-window .nav-link:active {
-    background-color: var(--ui-window-tab-active-bg) !important;
-    border-color: var(--ui-window-tab-active-border) !important;
-    border-bottom-color: var(--ui-window-tab-active-bg) !important;
-    color: var(--ui-window-tab-active-color) !important;
+.card-window .nav-link.active,
+.card-window .nav-link:active {
+    background-color: var(--card-window-tab-active-bg) !important;
+    border-color: var(--card-window-tab-active-border) !important;
+    border-bottom-color: var(--card-window-tab-active-bg) !important;
+    color: var(--card-window-tab-active-color) !important;
     font-weight: 700 !important;
     box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.01) !important;
 }
 
-.ui-window .nav-link.active::before,
-.ui-window .nav-link:active::before {
-    color: #268bd2 !important; /* blue indicator */
+.card-window .nav-link.active::before,
+.card-window .nav-link:active::before {
+    color: var(--accent-primary, #268bd2) !important; /* active indicator color */
     opacity: 1 !important;
 }
 
@@ -191,14 +153,14 @@
 
 @keyframes caret {
     from, to { border-color: transparent; }
-    50% { border-color: var(--sol-blue, #268bd2); }
+    50% { border-color: var(--accent-primary, #268bd2); }
 }
 
 .typing-effect {
     display: inline-block !important;
     overflow: hidden !important;
     white-space: nowrap !important;
-    border-right: 2px solid var(--sol-blue, #268bd2) !important;
+    border-right: 2px solid var(--accent-primary, #268bd2) !important;
     width: 0;
     animation: 
         typing 2.5s steps(40, end) forwards,

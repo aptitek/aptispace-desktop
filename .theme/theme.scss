@@ -147,6 +147,22 @@ div.sidebar-item-container .sidebar-item-text.sidebar-link.active {
 }
 
 // ==========================================
+// 5.5 PREMIUM UI TOUCHES
+// ==========================================
+
+// Custom Scrollbars
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb, rgba(147, 161, 161, 0.4));
+    border-radius: 10px;
+    &:hover { background: var(--scrollbar-thumb-hover, rgba(147, 161, 161, 0.8)); }
+}
+
+// ==========================================
 // 6. MERMAID SOLARIZED STYLING & HORIZONTAL CENTERING (Premium Card Style)
 // ==========================================
 
@@ -335,7 +351,7 @@ div.sidebar-item-container .sidebar-item-text.sidebar-link.active {
 
 .progress {
     width: 100% !important;
-    background-color: var(--sol-base2, #eee8d5) !important;
+    background-color: var(--progressbar-bg, #eee8d5) !important;
     border-radius: 6px !important;
     height: 8px !important;
     overflow: hidden !important;
@@ -348,23 +364,23 @@ div.sidebar-item-container .sidebar-item-text.sidebar-link.active {
 .progress-bar {
     height: 100% !important;
     transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    background-color: var(--sol-yellow, #b58900) !important; /* Default yellow progress */
+    background-color: var(--accent-warning, #b58900) !important; /* Default yellow progress */
     box-shadow: none !important;
 
     /* Color overrides based on Bootstrap utility names */
     &.bg-info {
-        background-color: var(--sol-blue, #268bd2) !important;
+        background-color: var(--accent-info, #268bd2) !important;
     }
     
     &.bg-success {
-        background-color: var(--sol-green, #859900) !important;
+        background-color: var(--accent-success, #859900) !important;
     }
 
     &.bg-warning {
-        background-color: var(--sol-orange, #cb4b16) !important;
+        background-color: var(--accent-warning, #cb4b16) !important;
     }
 
     &.bg-danger {
-        background-color: var(--sol-red, #dc322f) !important;
+        background-color: var(--accent-danger, #dc322f) !important;
     }
 }
