@@ -784,3 +784,157 @@
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
+/* ============================================================
+   PREMIUM SOLARIZED RESKIN OVERRIDES
+   ============================================================ */
+
+.timeline {
+  --tl-color-line: var(--sol-magenta, #d33682) !important;
+  --tl-color-dot: var(--sol-magenta, #d33682) !important;
+  --tl-color-label: var(--sol-base01, #586e75) !important;
+  --tl-line-width: 4px !important;
+}
+
+/* Rainbow gradient line */
+.timeline::before {
+  background: linear-gradient(to bottom,
+    var(--sol-magenta, #d33682),
+    var(--sol-red, #dc322f),
+    var(--sol-orange, #cb4b16),
+    var(--sol-yellow, #b58900),
+    var(--sol-green, #859900),
+    var(--sol-cyan, #2aa198),
+    var(--sol-blue, #268bd2),
+    var(--sol-violet, #6c71c4)
+  ) !important;
+}
+
+/* Apply colors to pseudo elements */
+.timeline .event::after {
+  border-color: var(--tl-color-accent, var(--tl-color-dot)) !important;
+}
+
+.timeline .event::before {
+  color: var(--tl-color-accent, var(--tl-color-label)) !important;
+}
+
+/* Dynamic chronological colors */
+.timeline.vertical .event:nth-child(1),
+.timeline.horizontal .event:nth-child(1),
+.timeline .event:nth-child(1) {
+  --tl-color-accent: var(--sol-magenta, #d33682) !important;
+}
+.timeline.vertical .event:nth-child(2),
+.timeline.horizontal .event:nth-child(2),
+.timeline .event:nth-child(2) {
+  --tl-color-accent: var(--sol-red, #dc322f) !important;
+}
+.timeline.vertical .event:nth-child(3),
+.timeline.horizontal .event:nth-child(3),
+.timeline .event:nth-child(3) {
+  --tl-color-accent: var(--sol-orange, #cb4b16) !important;
+}
+.timeline.vertical .event:nth-child(4),
+.timeline.horizontal .event:nth-child(4),
+.timeline .event:nth-child(4) {
+  --tl-color-accent: var(--sol-yellow, #b58900) !important;
+}
+.timeline.vertical .event:nth-child(5),
+.timeline.horizontal .event:nth-child(5),
+.timeline .event:nth-child(5) {
+  --tl-color-accent: var(--sol-green, #859900) !important;
+}
+.timeline.vertical .event:nth-child(6),
+.timeline.horizontal .event:nth-child(6),
+.timeline .event:nth-child(6) {
+  --tl-color-accent: var(--sol-cyan, #2aa198) !important;
+}
+.timeline.vertical .event:nth-child(7),
+.timeline.horizontal .event:nth-child(7),
+.timeline .event:nth-child(7) {
+  --tl-color-accent: var(--sol-blue, #268bd2) !important;
+}
+.timeline.vertical .event:nth-child(8),
+.timeline.horizontal .event:nth-child(8),
+.timeline .event:nth-child(8) {
+  --tl-color-accent: var(--sol-violet, #6c71c4) !important;
+}
+.timeline.vertical .event:nth-child(9),
+.timeline.horizontal .event:nth-child(9),
+.timeline .event:nth-child(9) {
+  --tl-color-accent: var(--sol-magenta, #d33682) !important;
+}
+.timeline.vertical .event:nth-child(10),
+.timeline.horizontal .event:nth-child(10),
+.timeline .event:nth-child(10) {
+  --tl-color-accent: var(--sol-red, #dc322f) !important;
+}
+.timeline.vertical .event:nth-child(11),
+.timeline.horizontal .event:nth-child(11),
+.timeline .event:nth-child(11) {
+  --tl-color-accent: var(--sol-orange, #cb4b16) !important;
+}
+.timeline.vertical .event:nth-child(12),
+.timeline.horizontal .event:nth-child(12),
+.timeline .event:nth-child(12) {
+  --tl-color-accent: var(--sol-yellow, #b58900) !important;
+}
+.timeline.vertical .event:nth-child(13),
+.timeline.horizontal .event:nth-child(13),
+.timeline .event:nth-child(13) {
+  --tl-color-accent: var(--sol-green, #859900) !important;
+}
+.timeline.vertical .event:nth-child(14),
+.timeline.horizontal .event:nth-child(14),
+.timeline .event:nth-child(14) {
+  --tl-color-accent: var(--sol-cyan, #2aa198) !important;
+}
+.timeline.vertical .event:nth-child(15),
+.timeline.horizontal .event:nth-child(15),
+.timeline .event:nth-child(15) {
+  --tl-color-accent: var(--sol-blue, #268bd2) !important;
+}
+.timeline.vertical .event:nth-child(16),
+.timeline.horizontal .event:nth-child(16),
+.timeline .event:nth-child(16) {
+  --tl-color-accent: var(--sol-violet, #6c71c4) !important;
+}
+.timeline.vertical .event:nth-child(17),
+.timeline.horizontal .event:nth-child(17),
+.timeline .event:nth-child(17) {
+  --tl-color-accent: var(--sol-magenta, #d33682) !important;
+}
+.timeline.vertical .event:nth-child(18),
+.timeline.horizontal .event:nth-child(18),
+.timeline .event:nth-child(18) {
+  --tl-color-accent: var(--sol-red, #dc322f) !important;
+}
+.timeline.vertical .event:nth-child(19),
+.timeline.horizontal .event:nth-child(19),
+.timeline .event:nth-child(19) {
+  --tl-color-accent: var(--sol-orange, #cb4b16) !important;
+}
+.timeline.vertical .event:nth-child(20),
+.timeline.horizontal .event:nth-child(20),
+.timeline .event:nth-child(20) {
+  --tl-color-accent: var(--sol-yellow, #b58900) !important;
+}
+
+/* Semantic modifiers for manual override */
+.timeline .event.is-info {
+  --tl-color-accent: var(--sol-blue, #268bd2) !important;
+}
+.timeline .event.is-success {
+  --tl-color-accent: var(--sol-green, #859900) !important;
+}
+.timeline .event.is-warning {
+  --tl-color-accent: var(--sol-yellow, #b58900) !important;
+}
+.timeline .event.is-danger {
+  --tl-color-accent: var(--sol-red, #dc322f) !important;
+}
+.timeline .event.is-debug {
+  --tl-color-accent: var(--sol-base1, #93a1a1) !important;
+}
+
+

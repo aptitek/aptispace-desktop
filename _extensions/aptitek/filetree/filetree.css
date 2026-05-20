@@ -49,36 +49,130 @@
 }
 
 /* --- SPECIFIC LIST STYLING --- */
-.ui-ide-list .filetree-link {
+.ui-ide-list {
+    padding-left: 0 !important;
+    margin: 0 !important;
+    list-style: none !important;
+}
+
+.ui-ide-list .folder ul {
+    padding-left: 20px !important;
+    border-left: 1px dashed rgba(88, 110, 117, 0.2) !important;
+    margin-left: 8px !important;
+    margin-top: 4px !important;
+    margin-bottom: 4px !important;
+    list-style: none !important;
+}
+
+.ui-ide-list li {
+    padding: 3px 0;
+    line-height: 1.5;
+    list-style: none !important;
+}
+
+.ui-ide-list li a.filetree-link,
+.ui-ide-list li span {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--ui-ide-text);
+    font-size: 0.9rem;
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin-left: -6px;
+    transition: all 0.15s ease;
+}
+
+.ui-ide-list li a.filetree-link {
     cursor: pointer;
-    transition: all 0.15s ease-in-out;
 }
 
-.ui-ide-list .filetree-link:hover {
+.ui-ide-list li a.filetree-link:hover {
+    background-color: rgba(38, 139, 210, 0.08);
     color: var(--ui-ide-link-hover) !important;
-    background-color: rgba(0, 0, 0, 0.03);
 }
 
-.ui-ide-list .filetree-link.is-active {
+.ui-ide-list li a.filetree-link:hover .filetree-name {
+    color: var(--ui-ide-link-hover) !important;
+}
+
+.ui-ide-list li a.filetree-link.is-active {
     background-color: var(--ui-ide-active-bg) !important;
     color: var(--ui-ide-active-color) !important;
     font-weight: 600;
 }
 
-.ui-ide-list .folder summary::-webkit-details-marker {
-    display: none;
+.ui-ide-list li span {
+    cursor: default;
 }
 
-.ui-ide-list .folder-arrow {
-    transition: transform 0.25s ease-in-out;
+.ui-ide-list li summary {
+    list-style: none !important;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: var(--ui-ide-text);
+    user-select: none;
+    border-radius: 4px;
+    padding: 2px 6px;
+    margin-left: -6px;
+    transition: all 0.15s ease;
+}
+
+.ui-ide-list li summary::-webkit-details-marker {
+    display: none !important;
+}
+
+.ui-ide-list li summary:hover {
+    background-color: rgba(181, 137, 0, 0.05);
+}
+
+.ui-ide-list li summary:hover .filetree-name {
+    color: var(--accent-warning, #b58900) !important;
+}
+
+.ui-ide-list li .folder-arrow {
+    margin-right: 5px;
+    font-size: 0.75rem;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     display: inline-block;
+    color: var(--accent-base1, #93a1a1);
 }
 
-.ui-ide-list details[open] > summary > .folder-arrow {
+.ui-ide-list li details[open] > summary > .folder-arrow {
     transform: rotate(90deg);
+    color: var(--accent-warning, #b58900);
 }
 
-/* Subtle icons styling */
-.ui-ide-list .bi {
+/* Icons & Colors */
+.ui-ide-list li .folder-icon {
+    color: var(--accent-warning, #b58900);
+    margin-right: 6px;
+    font-size: 0.95rem;
+}
+
+.ui-ide-list li .file-icon {
+    color: var(--ui-ide-active-color);
+    margin-right: 6px;
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+/* Name & Comment styling */
+.ui-ide-list .filetree-name {
+    font-family: var(--font-code, monospace);
+    font-weight: 700;
+    color: var(--ui-ide-text);
+    transition: color 0.15s ease;
+}
+
+.ui-ide-list .filetree-comment {
+    font-family: var(--font-base, sans-serif);
+    font-size: 0.82rem;
+    color: var(--accent-base1, #93a1a1);
+    margin-left: 8px;
+    font-style: italic;
+    font-weight: 400;
     opacity: 0.9;
 }
