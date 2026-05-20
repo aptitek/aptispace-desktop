@@ -58,25 +58,28 @@ export const metricCard = ({ title, value, subtitle = "", trend = "neutral" }) =
 export const dataRow = ({ index, dataObject }) => {
   const columnsHtml = Object.entries(dataObject).map(([key, value]) => {
     const typeObj = typeof value;
-    const badgeClass = typeObj === 'number' ? 'is-info' : (typeObj === 'string' ? 'is-success' : '');
     
     return `
-      <div class="ui-data-cell">
-        <span class="label">${key}</span>
-        <div style="display: flex; gap: 8px; align-items: center;">
-          <span class="value">${utils.truncateText(String(value), 30)}</span>
-          <span class="badge ${badgeClass}">${typeObj}</span>
+      <div class="col-sm-6 col-md-4 col-lg-3 mb-2">
+        <div class="small text-muted text-uppercase" style="font-size: 0.7em;">${key}</div>
+        <div class="d-flex align-items-center gap-2">
+          <span class="text-truncate fw-semibold text-body" title="${value}">${utils.truncateText(String(value), 30)}</span>
+          <span class="badge bg-light text-dark font-monospace" style="font-size: 0.65em; border: 1px solid var(--sol-base1, rgba(88, 110, 117, 0.1));">${typeObj}</span>
         </div>
       </div>
     `;
   }).join('');
 
   return `
-    <div class="ui-data-row">
-      <div style="font-size: 0.75em; color: var(--sol-base01); margin-bottom: 10px; text-transform: uppercase; font-weight: bold;">
-        Index: <span class="badge">${index}</span>
+    <div class="card mb-3 shadow-none border" style="border: 1px solid var(--sol-base1, rgba(88, 110, 117, 0.12)); background: var(--sol-base3, #fdf6e3);">
+      <div class="card-header bg-light py-1 px-3 d-flex justify-content-between align-items-center" style="background-color: var(--sol-base2, #eee8d5) !important; border-bottom: 1px solid var(--sol-base1, rgba(88, 110, 117, 0.08));">
+        <span class="small fw-bold text-uppercase text-muted" style="font-size: 0.75em; color: var(--sol-base01, #93a1a1) !important;">Index: ${index}</span>
       </div>
-      ${columnsHtml}
+      <div class="card-body py-2 px-3">
+        <div class="row">
+          ${columnsHtml}
+        </div>
+      </div>
     </div>
   `;
 };
