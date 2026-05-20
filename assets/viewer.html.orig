@@ -51,18 +51,6 @@
             font-variation-settings: 'MONO' 1;
         }
 
-        body.is-render-mode {
-            background-color: var(--bg-color) !important;
-            color: var(--text-color) !important;
-            font-family: 'Recursive', sans-serif;
-            font-variation-settings: 'MONO' 0, 'CASL' 0, 'slnt' 0, 'CRSV' 0.5;
-        }
-
-        body.is-render-mode code, body.is-render-mode pre code {
-            font-family: var(--code-font);
-            font-variation-settings: 'MONO' 1;
-        }
-
         /* --- 2. CONTAINER --- */
         .sourceCode {
             position: relative;

@@ -1,0 +1,84 @@
+/* ==========================================================================
+   WIDGET "FAKE IDE" (File Explorer) Stylesheet
+   ========================================================================== */
+
+.ui-ide {
+    /* Semantic design tokens mapping to main theme variables with fallbacks */
+    --ui-ide-bg: var(--bg-color, #fdf6e3);
+    --ui-ide-text: var(--text-color, #657b83);
+    --ui-ide-sidebar-bg: var(--sidebar-bg, #eee8d5);
+    --ui-ide-border: var(--border-color, #eee8d5);
+    --ui-ide-link-hover: var(--link-hover, #cb4b16);
+    --ui-ide-active-bg: rgba(38, 139, 210, 0.12);
+    --ui-ide-active-color: var(--link-color, #268bd2);
+
+    /* Layout values */
+    min-height: 100px;
+    background-color: var(--ui-ide-bg);
+    transition: all 0.3s ease-in-out;
+}
+
+/* --- SIDEBAR --- */
+.ui-ide-sidebar {
+    width: 100%;
+    background-color: var(--ui-ide-sidebar-bg);
+    transition: width 0.3s ease-in-out;
+    box-sizing: border-box;
+}
+
+/* --- MAIN INTERACTIVE VIEW --- */
+.ui-ide-main {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* --- ACTIVE EXPANDED STATE --- */
+.ui-ide.is-active {
+    height: 600px;
+}
+
+.ui-ide.is-active .ui-ide-sidebar {
+    width: 260px;
+    border-right: 1px solid var(--ui-ide-border) !important;
+    overflow-y: auto;
+}
+
+.ui-ide.is-active .ui-ide-main {
+    display: flex !important;
+    opacity: 1;
+}
+
+/* --- SPECIFIC LIST STYLING --- */
+.ui-ide-list .filetree-link {
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+}
+
+.ui-ide-list .filetree-link:hover {
+    color: var(--ui-ide-link-hover) !important;
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.ui-ide-list .filetree-link.is-active {
+    background-color: var(--ui-ide-active-bg) !important;
+    color: var(--ui-ide-active-color) !important;
+    font-weight: 600;
+}
+
+.ui-ide-list .folder summary::-webkit-details-marker {
+    display: none;
+}
+
+.ui-ide-list .folder-arrow {
+    transition: transform 0.25s ease-in-out;
+    display: inline-block;
+}
+
+.ui-ide-list details[open] > summary > .folder-arrow {
+    transform: rotate(90deg);
+}
+
+/* Subtle icons styling */
+.ui-ide-list .bi {
+    opacity: 0.9;
+}

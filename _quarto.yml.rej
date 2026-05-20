@@ -1,19 +1,10 @@
 --- _quarto.yml
 +++ _quarto.yml
-@@ -12,6 +12,7 @@ project:
+@@ -8,6 +8,7 @@ project:
+   resources:
+     - "lab/**"
+     - "assets/**"
++    - "**/_*.qmd"
+ 
  filters:
    - filetree
-   - card
-+  - timeline
- 
- website:
-   title: "Template"
-@@ -23,7 +24,7 @@ website:
-   sidebar:
-     # --- CONFIGURATION BRANDING ---
-     logo: "assets/logo.svg"          # Chemin vers l'image
--    logo-href: "https://aptitek.io"  # Redirection externe vers votre site
-+    logo-href: "/"
-     logo-alt: "Aptitek"              # Texte alternatif pour l'accessibilité
-     # ------------------------------
-     style: "docked"

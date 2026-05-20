@@ -1,0 +1,352 @@
+--- .theme/theme.scss
++++ .theme/theme.scss
+@@ -145,238 +145,139 @@ div.sidebar-item-container .sidebar-item-text.sidebar-link.active {
+ }
+ 
+ // ==========================================
+-// 6. MERMAID DIAGRAMS
++// 6. MERMAID SOLARIZED STYLING & HORIZONTAL CENTERING (Premium Card Style)
+ // ==========================================
+ 
+-/* Ciblage global du conteneur Mermaid */
+-.cell-output-display .mermaid {
++/* Ciblage global du conteneur Mermaid avec style de carte Premium macOS */
++.cell-output-display .mermaid,
++.cell-output-display div:has(> svg.mermaid-js) {
+     font-family: $font-family-code !important;
+-    background-color: transparent !important;
+-}
+-
+-/* 1. LES BOITES (Nœuds) */
+-/* Force le beige foncé ($sol-base2) et les bordures grises ($sol-base01) */
+-g.node rect,
+-g.node circle,
+-g.node polygon,
+-g.node path {
+-    fill: $sol-base2 !important;
+-    stroke: $sol-base01 !important;
+-    stroke-width: 1.5px !important;
+-}
+-
+-/* 2. LE TEXTE DANS LES BOITES */
+-/* Gris foncé ($sol-base00) */
+-g.node .label {
+-    color: $sol-base00 !important;
+-    font-family: $font-family-code !important;
+-    font-weight: 500;
+-}
+-
+-/* Hack pour le texte HTML dans Mermaid */
+-g.node .nodeLabel,
+-g.node .label div {
+-    color: $sol-base00 !important;
+-    background-color: transparent !important;
+-}
+-
+-/* 3. LES LIENS (Flèches) */
+-/* Gris clair ($sol-base1) */
+-.edgePath .path {
+-    stroke: $sol-base1 !important;
+-    stroke-width: 2px !important;
+-}
+-
+-/* Les pointes de flèches (Markers) */
+-#mermaid-defs marker path,
+-marker path {
+-    fill: $sol-base1 !important;
+-    stroke: $sol-base1 !important;
+-}
+-
+-/* 4. LES FORMES SPÉCIALES */
+-g.node polygon {
+-    fill: $sol-base3 !important;
+-}
+-
+-/* 5. NOTES (Post-it) */
+-g.note rect {
+-    fill: $sol-base3 !important;
+-    stroke: $sol-yellow !important;
+-}
+-
+-g.note .label {
+-    color: $sol-base00 !important;
+-    font-family: $font-family-code !important;
+-}
+-
+-/* 6. ÉTIQUETTES SUR LES FLÈCHES */
+-g.edgeLabel,
+-.edgeLabel {
+-    color: $sol-base00 !important;
+-    fill: $sol-base00 !important;
+-    font-family: $font-family-code !important;
+-}
+-
+-g.edgeLabel p {
+     background-color: $sol-base3 !important;
+-    color: $sol-base00 !important;
+-    font-family: $font-family-code !important;
+-    padding: 2px 4px;
+-    font-size: 0.9em;
+-}
+-
+-g.edgeLabel rect {
+-    fill: $sol-base3 !important;
+-    opacity: 1 !important;
+-    stroke: none !important;
+-}
+-
+-// ==========================================
+-// 7. WIDGET "FAKE IDE" (File Explorer)
+-// ==========================================
+-
+-// NOTE: Uses variables mapped in _css-variables.scss for runtime consistency?
+-// Actually SCSS runs at build time, so we use SCSS tokens here.
+-
+-.ide-container {
+-    display: flex;
+-    min-height: 100px;
+-    border: 1px solid $sol-base1;
+-    border-radius: 6px;
+-    overflow: hidden;
+-    margin-bottom: 2rem;
+-    font-family: $font-family-base;
+-    background-color: $sol-base3;
+-    transition: all 0.3s ease;
+-}
+-
+-/* --- SIDEBAR --- */
+-.ide-sidebar {
+-    width: 100%;
+-    background-color: $sol-base2;
+-    padding: 10px;
+-    border-right: none;
+-    transition: width 0.3s ease;
+-}
+-
+-/* --- MAIN --- */
+-.ide-main {
+-    display: none;
+-    flex: 1;
+-    flex-direction: column;
+-    opacity: 0;
+-    transition: opacity 0.5s ease;
+-}
+ 
+-.ide-main iframe {
+-    width: 100%;
+-    height: 100%;
+-    border: none;
+-}
++    svg {
++        font-size: 16px !important;
++        max-width: 100% !important;
++        height: auto !important;
++    }
++    border: 1px solid $sol-base2 !important;
++    border-radius: 8px !important;
++    box-shadow: 0 4px 12px rgba($sol-base03, 0.05) !important;
++    margin: 2rem auto !important;
++    padding: 48px 24px 24px 24px !important; // 48px top padding for absolute macos dots
++    width: 100% !important;
++    max-width: 100% !important;
++    display: block !important;
++    text-align: center !important;
++    box-sizing: border-box !important;
++    position: relative !important;
++    overflow: auto !important;
++    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+ 
+-/* --- ACTIVE STATE --- */
+-.ide-container.is-active {
+-    height: 600px;
+-}
++    &:hover {
++        box-shadow: 0 8px 24px rgba($sol-base03, 0.08) !important;
++        transform: translateY(-2px) !important;
++    }
+ 
+-.ide-container.is-active .ide-sidebar {
+-    width: 250px;
+-    border-right: 1px solid $sol-base1;
+-    overflow-y: auto;
+-}
++    // Built-in premium macOS-style window header decoration (like the dynamic simulators)
++    &::before {
++        content: "" !important;
++        position: absolute !important;
++        top: 14px !important;
++        left: 16px !important;
++        width: 8px !important;
++        height: 8px !important;
++        background-color: #{$sol-red} !important;
++        border-radius: 50% !important;
++        box-shadow: 14px 0 0 #{$sol-yellow}, 28px 0 0 #{$sol-green} !important;
++        opacity: 0.85 !important;
++        z-index: 10 !important;
++    }
+ 
+-.ide-container.is-active .ide-main {
+-    display: flex;
+-    opacity: 1;
+-}
++    /* 1. LES BOITES (Nœuds) */
++    /* Force le beige foncé ($sol-base2) et les bordures grises ($sol-base01) */
++    g.node rect,
++    g.node circle,
++    g.node polygon,
++    g.node path {
++        fill: $sol-base2 !important;
++        stroke: $sol-base01 !important;
++        stroke-width: 1.5px !important;
++    }
+ 
+-/* --- UI ELEMENTS --- */
+-.ide-header-row {
+-    display: flex;
+-    justify-content: space-between;
+-    align-items: center;
+-    padding-bottom: 8px;
+-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+-    margin-bottom: 10px;
+-}
++    /* 2. LE TEXTE DANS LES BOITES */
++    /* Gris foncé ($sol-base00) */
++    g.node .label {
++        color: $sol-base00 !important;
++        font-family: $font-family-code !important;
++        font-weight: 500;
++        font-size: 16px !important;
++    }
+ 
+-.ide-title {
+-    font-weight: 800;
+-    color: $sol-base01;
+-    text-transform: uppercase;
+-    font-size: 0.75em;
+-}
++    /* Hack pour le texte HTML dans Mermaid */
++    g.node .nodeLabel,
++    g.node .label div {
++        color: $sol-base00 !important;
++        background-color: transparent !important;
++        font-size: 16px !important;
++    }
+ 
+-.ide-download-btn {
+-    font-size: 0.75em;
+-    background-color: $sol-base3;
+-    color: $sol-blue !important;
+-    border: 1px solid $sol-base1;
+-    padding: 2px 8px;
+-    border-radius: 4px;
+-    text-decoration: none !important;
+-    font-weight: bold;
+-}
++    /* 3. LES LIENS (Flèches) */
++    /* Gris clair ($sol-base1) */
++    .edgePath .path {
++        stroke: $sol-base1 !important;
++        stroke-width: 2px !important;
++    }
+ 
+-.ide-download-btn:hover {
+-    background-color: $sol-blue;
+-    color: white !important;
+-}
++    /* Les pointes de flèches (Markers) */
++    #mermaid-defs marker path,
++    marker path {
++        fill: $sol-base1 !important;
++        stroke: $sol-base1 !important;
++    }
+ 
++    /* 4. LES FORMES SPÉCIALES */
++    g.node polygon {
++        fill: $sol-base3 !important;
++    }
+ 
+-/* File List */
+-ul.file-tree-list,
+-ul.file-tree-list ul {
+-    list-style: none;
+-    padding-left: 0;
+-    margin: 0;
+-}
++    /* 5. NOTES (Post-it) */
++    g.note rect {
++        fill: $sol-base3 !important;
++        stroke: $sol-yellow !important;
++    }
+ 
+-.file-tree-list .folder ul {
+-    padding-left: 24px;
+-    /* Increased indent */
+-    border-left: 1px solid rgba(0, 0, 0, 0.05);
+-    margin-left: 4px;
+-    /* Slight offset for border alignment */
+-}
++    g.note .label {
++        color: $sol-base00 !important;
++        font-family: $font-family-code !important;
++        font-size: 16px !important;
++    }
+ 
+-.file a,
+-.folder summary {
+-    display: flex;
+-    align-items: center;
+-    gap: 8px;
+-    padding: 3px 0;
+-    text-decoration: none;
+-    color: $sol-base00;
+-    cursor: pointer;
+-    list-style: none;
+-    /* Hide default marker */
+-}
++    /* 6. ÉTIQUETTES SUR LES FLÈCHES */
++    g.edgeLabel,
++    .edgeLabel {
++        color: $sol-base00 !important;
++        fill: $sol-base00 !important;
++        font-family: $font-family-code !important;
++        font-size: 16px !important;
++    }
+ 
+-.folder summary::-webkit-details-marker {
+-    display: none;
+-}
++    g.edgeLabel p {
++        background-color: $sol-base3 !important;
++        color: $sol-base00 !important;
++        font-family: $font-family-code !important;
++        padding: 2px 4px;
++        font-size: 0.9em !important;
++    }
+ 
+-.folder-arrow {
+-    margin-right: 5px;
+-    font-size: 0.8em;
+-    transition: transform 0.2s ease;
+-    display: inline-block;
++    g.edgeLabel rect {
++        fill: $sol-base3 !important;
++        opacity: 1 !important;
++        stroke: none !important;
++    }
+ }
+ 
+-details[open]>summary>.folder-arrow {
+-    transform: rotate(90deg);
+-}
+ 
+-.file a:hover {
+-    color: $sol-orange !important;
+-    background: rgba(255, 255, 255, 0.4);
+-}
+ 
+-.bi {
+-    opacity: 0.8;
+-}
+ 
+ // ==========================================
+ // 8. JUPYTERLITE CARD (Shortcode)
