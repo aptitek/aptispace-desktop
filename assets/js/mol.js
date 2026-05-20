@@ -85,68 +85,61 @@ export const dataRow = ({ index, dataObject }) => {
 };
 
 /**
- * 🧩 Texte Tokenisé
- */
-export const tokenizedText = ({ tokens = [], highlightIndex = -1 }) => {
-  const tokensHtml = tokens.map((token, i) => {
-    const isHighlighted = i === highlightIndex;
-    const colorClass = isHighlighted ? "is-info" : "";
-    return `<span class="badge ${colorClass}">${token}</span>`;
-  }).join('<span style="margin: 0 2px;"></span>');
-
-  return `
-    <div style="display: flex; flex-wrap: wrap; gap: 6px; padding: 12px; background: rgba(var(--sol-base03-rgb), 0.03); border-radius: 8px;">
-      ${tokensHtml}
-    </div>
-  `;
-};
-
-/**
- * 🎨 Espace Vectoriel / Canvas
+ * 🎨 Espace Vectoriel / Canvas (Standardized to Card & Canvas classes)
  */
 export const vectorSpace = ({ content = "", height = "250px", label = "Espace Vectoriel" }) => `
-  <div class="ui-canvas" style="height: ${height};">
-    ${label ? `<div style="position: absolute; top: 10px; left: 15px; z-index: 10;"><div class="ui-card-header atom-text-label">${label}</div></div>` : ''}
-    <div style="width: 100%; height: 100%; position: relative;">
-      ${content}
+  <div class="card card-window mb-4">
+    ${label ? `<div class="card-header card-window-header">${label}</div>` : ''}
+    <div class="card-body p-0">
+      <div class="canvas border-0 m-0 rounded-0" style="height: ${height}; min-height: ${height};">
+        ${content}
+      </div>
     </div>
   </div>
 `;
 
 /**
- * ⚖️ Grille de Comparaison
+ * ⚖️ Grille de Comparaison (Standardized to Bootstrap Grid Rows)
  */
 export const comparisonLayout = ({ leftTitle, leftContent, rightTitle, rightContent }) => `
-  <div class="ui-comparison">
-    <div class="ui-comparison-panel">
-      <div class="ui-card-header" style="padding-left: 0; margin-bottom: 10px; background: transparent; color: inherit;">${leftTitle}</div>
-      ${leftContent}
+  <div class="row align-items-center mb-4">
+    <div class="col-md-5 mb-3 mb-md-0">
+      <div class="card card-window m-0">
+        <div class="card-header card-window-header">${leftTitle}</div>
+        <div class="card-body">${leftContent}</div>
+      </div>
     </div>
-    <div class="ui-comparison-arrow">➡️</div>
-    <div class="ui-comparison-panel">
-      <div class="ui-card-header" style="padding-left: 0; margin-bottom: 10px; background: transparent; color: inherit;">${rightTitle}</div>
-      ${rightContent}
+    <div class="col-md-2 text-center mb-3 mb-md-0" style="font-size: 1.5rem;">
+      ➡️
+    </div>
+    <div class="col-md-5">
+      <div class="card card-window m-0">
+        <div class="card-header card-window-header">${rightTitle}</div>
+        <div class="card-body">${rightContent}</div>
+      </div>
     </div>
   </div>
 `;
 
 /**
- * 🎛️ Toggle Switcher (Replicated from IA)
+ * 🎛️ Toggle Switcher (Standardized to Bootstrap Button Groups)
  * Compatible with Observable's viewof syntax
  */
 export const toggle = ({ label: labelText, options, value, states, layout = 'horizontal' }) => {
   const container = document.createElement('div');
-  container.className = `mol-toggle ${layout === 'horizontal' ? 'is-horizontal' : ''}`;
+  container.className = `d-flex ${layout === 'horizontal' ? 'align-items-center gap-3' : 'flex-column gap-2'} mb-3`;
 
   if (labelText) {
     const labelEl = document.createElement('span');
-    labelEl.className = 'atom-label';
+    labelEl.className = 'fw-bold small text-muted text-uppercase';
+    labelEl.style.fontSize = '0.75rem';
     labelEl.innerText = labelText;
     container.appendChild(labelEl);
   }
 
   const group = document.createElement('div');
-  group.className = 'toggle-group';
+  group.className = 'btn-group';
+  group.setAttribute('role', 'group');
 
   const isObjectOptions = !Array.isArray(options);
   const keys = isObjectOptions ? Object.keys(options) : options;
@@ -154,17 +147,24 @@ export const toggle = ({ label: labelText, options, value, states, layout = 'hor
   keys.forEach(key => {
     const displayValue = isObjectOptions ? options[key] : key;
     const btn = document.createElement('button');
-    btn.className = `toggle-option ${key === value ? 'active' : ''}`;
-
-    // Semantic states (info, success, warning, danger)
+    btn.type = 'button';
+    
+    // Choose standard Bootstrap button styles based on state
+    let btnOutlineClass = 'btn-outline-primary';
     if (states && states[key]) {
-      btn.setAttribute('data-state', states[key]);
+      const state = states[key];
+      if (state === 'success') btnOutlineClass = 'btn-outline-success';
+      else if (state === 'danger') btnOutlineClass = 'btn-outline-danger';
+      else if (state === 'warning') btnOutlineClass = 'btn-outline-warning';
+      else if (state === 'info') btnOutlineClass = 'btn-outline-info';
     }
-
+    
+    btn.className = `btn btn-sm ${btnOutlineClass} ${key === value ? 'active' : ''}`;
     btn.innerText = displayValue;
+    
     btn.onclick = () => {
       if (container.value === key) return;
-      group.querySelectorAll('.toggle-option').forEach(b => b.classList.remove('active'));
+      group.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       container.value = key;
       container.dispatchEvent(new Event("input", { bubbles: true }));
