@@ -2,7 +2,6 @@
 // org.js - Les Organismes (Simulateurs Pédagogiques) (DRY/KISS)
 // ==========================================
 import { theme, utils } from "./core.js";
-import * as atom from "./atom.js";
 import * as mol from "./mol.js";
 
 /**
@@ -10,11 +9,23 @@ import * as mol from "./mol.js";
  */
 export const dataframeInspector = ({ data = [], title = "Aperçu du Dataset", maxRows = 5 }) => {
   if (!data || data.length === 0) {
-    return atom.terminalWindow({ header: title, content: atom.logLine({ message: "Dataset vide." }) });
+    return `
+      <div class="ui-terminal">
+        <div class="ui-terminal-header">
+          <span class="ui-terminal-title">${title}</span>
+        </div>
+        <div class="ui-terminal-body">
+          <div class="ui-terminal-line is-info">
+            <span class="prefix">(></span> 
+            <span class="message">Dataset vide.</span>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   const features = Object.keys(data[0]);
-  const schemaHtml = features.map(feat => atom.badge({ text: feat })).join(' ');
+  const schemaHtml = features.map(feat => `<span class="badge">${feat}</span>`).join(' ');
   const rowsHtml = data.slice(0, maxRows).map((row, idx) => mol.dataRow({ index: idx, dataObject: row })).join('');
 
   return `
@@ -41,7 +52,10 @@ export const splitSimulator = ({ totalBlocks = 100, trainRatio = 0.8, shuffle = 
   let dataset = [...Array(trainCount).fill("train"), ...Array(testCount).fill("test")];
   if (shuffle) dataset = dataset.sort(() => Math.random() - 0.5);
 
-  const blocksHtml = dataset.map(type => atom.dataBlock({ type })).join('');
+  const blocksHtml = dataset.map(type => {
+    const colorClass = type === "train" ? "is-info" : (type === "test" ? "is-success" : "");
+    return `<div class="badge ${colorClass} is-block"></div>`;
+  }).join('');
 
   return `
     <div class="ui-card is-info">
@@ -108,7 +122,7 @@ export const ensembleSimulator = ({ mode = "bagging", numTrees = 3 }) => {
             ${treeNodesHtml.join(isBagging ? '' : '➡️')}
           </div>
           <div style="font-size: 1.5em; opacity: 0.5;">⬇️</div>
-          ${atom.badge({ text: isBagging ? "Random Forest" : "XGBoost", colorClass })}
+          <span class="badge ${colorClass}">${isBagging ? "Random Forest" : "XGBoost"}</span>
         </div>
         ${mol.terminalConsole({ header: "Logs", logs: trees.map(t => `Arbre ${t} prêt.`) })}
       </div>
@@ -179,7 +193,14 @@ export const plotlyWrapper = ({ data, layout = {}, config = {}, title = "Visuali
     if (typeof Plotly !== 'undefined') {
       Plotly.newPlot(plotNode, data, themeLayout, finalConfig);
     } else {
-      plotNode.innerHTML = `<div style="padding: 20px;">${atom.logLine({ message: "Erreur: Plotly n'est pas chargé sur cette page.", type: "danger" })}</div>`;
+      plotNode.innerHTML = `
+        <div style="padding: 20px;">
+          <div class="ui-terminal-line is-danger">
+            <span class="prefix">(></span> 
+            <span class="message">Erreur: Plotly n'est pas chargé sur cette page.</span>
+          </div>
+        </div>
+      `;
     }
   }, 10);
 

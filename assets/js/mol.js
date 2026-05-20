@@ -2,14 +2,25 @@
 // mol.js - Les Molécules (DRY/KISS)
 // ==========================================
 import { theme, utils } from "./core.js";
-import * as atom from "./atom.js";
 
 /**
  * 🎛️ Terminal Console
  */
 export const terminalConsole = ({ header = "Processus", logs = [] }) => {
   if (!logs || logs.length === 0) {
-    return atom.terminalWindow({ header, content: atom.logLine({ message: "Aucune donnée à afficher", type: "muted" }) });
+    return `
+      <div class="ui-terminal">
+        <div class="ui-terminal-header">
+          <span class="ui-terminal-title">${header}</span>
+        </div>
+        <div class="ui-terminal-body">
+          <div class="ui-terminal-line is-muted">
+            <span class="prefix">(></span> 
+            <span class="message">Aucune donnée à afficher</span>
+          </div>
+        </div>
+      </div>
+    `;
   }
 
   const logContent = logs.map((log, index) => {
@@ -21,14 +32,29 @@ export const terminalConsole = ({ header = "Processus", logs = [] }) => {
       html = log;
     } else {
       const logObj = typeof log === 'string' ? { message: log } : log;
-      html = atom.logLine(logObj);
+      const { message, prefix = "(>", type = "info" } = logObj;
+      html = `
+        <div class="ui-terminal-line is-${type}">
+          <span class="prefix">${prefix}</span> 
+          <span class="message">${message}</span>
+        </div>
+      `;
     }
     
     // Injecter le délai dans le style (toujours nécessaire pour l'effet séquentiel)
     return html.replace('style="', `style="animation-delay: ${delay}s; `);
   }).join('');
 
-  return atom.terminalWindow({ header, content: logContent });
+  return `
+    <div class="ui-terminal">
+      <div class="ui-terminal-header">
+        <span class="ui-terminal-title">${header}</span>
+      </div>
+      <div class="ui-terminal-body">
+        ${logContent}
+      </div>
+    </div>
+  `;
 };
 
 /**
@@ -47,7 +73,7 @@ export const metricCard = ({ title, value, subtitle = "", trend = "neutral" }) =
     <div class="ui-card ${colorClass}" style="flex: 1; min-width: 150px;">
       <div class="ui-card-header">${title}</div>
       <div class="ui-card-body">
-        ${atom.text({ content: utils.formatNumber(value), type: "value" })}
+        <div class="ui-value atom-text-value">${utils.formatNumber(value)}</div>
         ${subtitle ? `<div style="font-size: 0.85em; color: var(--sol-base01); margin-top: 4px;">${subtitle}</div>` : ''}
       </div>
     </div>
@@ -67,7 +93,7 @@ export const dataRow = ({ index, dataObject }) => {
         <span class="label">${key}</span>
         <div style="display: flex; gap: 8px; align-items: center;">
           <span class="value">${utils.truncateText(String(value), 30)}</span>
-          ${atom.badge({ text: typeObj, colorClass: badgeClass })}
+          <span class="badge ${badgeClass}">${typeObj}</span>
         </div>
       </div>
     `;
@@ -76,7 +102,7 @@ export const dataRow = ({ index, dataObject }) => {
   return `
     <div class="ui-data-row">
       <div style="font-size: 0.75em; color: var(--sol-base01); margin-bottom: 10px; text-transform: uppercase; font-weight: bold;">
-        Index: ${atom.badge({ text: String(index) })}
+        Index: <span class="badge">${index}</span>
       </div>
       ${columnsHtml}
     </div>
@@ -90,7 +116,7 @@ export const tokenizedText = ({ tokens = [], highlightIndex = -1 }) => {
   const tokensHtml = tokens.map((token, i) => {
     const isHighlighted = i === highlightIndex;
     const colorClass = isHighlighted ? "is-info" : "";
-    return atom.badge({ text: token, colorClass });
+    return `<span class="badge ${colorClass}">${token}</span>`;
   }).join('<span style="margin: 0 2px;"></span>');
 
   return `
@@ -105,7 +131,7 @@ export const tokenizedText = ({ tokens = [], highlightIndex = -1 }) => {
  */
 export const vectorSpace = ({ content = "", height = "250px", label = "Espace Vectoriel" }) => `
   <div class="ui-canvas" style="height: ${height};">
-    ${label ? `<div style="position: absolute; top: 10px; left: 15px; z-index: 10;">${atom.text({ content: label, type: "label" })}</div>` : ''}
+    ${label ? `<div style="position: absolute; top: 10px; left: 15px; z-index: 10;"><div class="ui-card-header atom-text-label">${label}</div></div>` : ''}
     <div style="width: 100%; height: 100%; position: relative;">
       ${content}
     </div>
@@ -138,7 +164,10 @@ export const toggle = ({ label: labelText, options, value, states, layout = 'hor
   container.className = `mol-toggle ${layout === 'horizontal' ? 'is-horizontal' : ''}`;
 
   if (labelText) {
-    container.appendChild(atom.label(labelText));
+    const labelEl = document.createElement('span');
+    labelEl.className = 'atom-label';
+    labelEl.innerText = labelText;
+    container.appendChild(labelEl);
   }
 
   const group = document.createElement('div');
