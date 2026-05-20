@@ -110,9 +110,138 @@
     opacity: 1 !important;
 }
 
+
+/* --- BOOTSTRAP PANEL-TABSET AS A PREMIUM MACOS WINDOW --- */
+.panel-tabset {
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    margin-bottom: 2rem !important;
+    position: relative !important;
+    background-color: var(--card-window-bg, var(--card-bg, #fdf6e3)) !important;
+    border: 1px solid var(--card-window-border, var(--card-border, rgba(88, 110, 117, 0.12))) !important;
+    box-shadow: var(--card-window-shadow, var(--card-shadow, 0 4px 12px rgba(0, 43, 54, 0.03))) !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.panel-tabset:hover {
+    box-shadow: var(--card-window-shadow-hover, var(--card-shadow-hover, 0 8px 24px rgba(0, 43, 54, 0.05))) !important;
+    border-color: var(--card-window-border-hover, var(--card-border-hover, rgba(147, 161, 161, 0.4))) !important;
+}
+
+.panel-tabset .nav-tabs {
+    display: flex !important;
+    align-items: center !important;
+    height: 38px !important;
+    padding: 0 16px !important;
+    user-select: none !important;
+    background-color: var(--card-window-header-bg, var(--card-header-bg, #eee8d5)) !important;
+    border-bottom: 1px solid var(--card-window-header-border, var(--card-header-border, rgba(88, 110, 117, 0.08))) !important;
+    position: relative !important;
+    list-style: none !important;
+    margin-bottom: 0 !important;
+}
+
+.panel-tabset .nav-tabs::before {
+    content: "" !important;
+    display: inline-block !important;
+    flex-shrink: 0 !important;
+    width: 8px !important;
+    height: 8px !important;
+    background-color: #dc322f !important; /* red controls */
+    border-radius: 50% !important;
+    box-shadow: 14px 0 0 #b58900, 28px 0 0 #859900 !important; /* yellow, green controls */
+    margin-right: 42px !important;
+    opacity: 0.85 !important;
+}
+
+.panel-tabset .nav-tabs .nav-item {
+    margin-bottom: -1px !important;
+    border: none !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.panel-tabset .nav-tabs .nav-link {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    border-top-left-radius: 6px !important;
+    border-top-right-radius: 6px !important;
+    padding: 5px 14px !important;
+    font-family: var(--font-code, monospace) !important;
+    font-size: 0.8rem !important;
+    height: 28px !important;
+    line-height: 1 !important;
+    margin-bottom: -1px !important;
+    transition: all 0.15s ease !important;
+    text-decoration: none !important;
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
+    border-bottom: none !important;
+    color: var(--card-window-tab-inactive-color, var(--card-tab-inactive-color, #93a1a1)) !important;
+}
+
+.panel-tabset .nav-tabs .nav-link::before {
+    content: "\f3e6" !important; /* Bootstrap icon bi-file-earmark-code */
+    font-family: "bootstrap-icons" !important;
+    font-size: 0.85rem !important;
+    color: var(--card-window-tab-inactive-color, var(--card-tab-inactive-color, #93a1a1)) !important;
+    opacity: 0.7;
+}
+
+.panel-tabset .nav-tabs .nav-link:hover {
+    background-color: var(--card-window-tab-hover-bg, var(--card-tab-hover-bg, rgba(88, 110, 117, 0.03))) !important;
+    color: var(--card-window-tab-active-color, var(--card-tab-active-color, #586e75)) !important;
+}
+
+.panel-tabset .nav-tabs .nav-link.active,
+.panel-tabset .nav-tabs .nav-link:active {
+    background-color: var(--card-window-tab-active-bg, var(--card-tab-active-bg, #fdf6e3)) !important;
+    border-color: var(--card-window-tab-active-border, var(--card-tab-active-border, rgba(88, 110, 117, 0.08))) !important;
+    border-bottom-color: var(--card-window-tab-active-bg, var(--card-tab-active-bg, #fdf6e3)) !important;
+    color: var(--card-window-tab-active-color, var(--card-tab-active-color, #586e75)) !important;
+    font-weight: 700 !important;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.01) !important;
+}
+
+.panel-tabset .nav-tabs .nav-link.active::before,
+.panel-tabset .nav-tabs .nav-link:active::before {
+    color: var(--accent-primary, #268bd2) !important; /* active indicator color */
+    opacity: 1 !important;
+}
+
+.panel-tabset .tab-content {
+    background-color: var(--card-window-bg, var(--card-bg, #fdf6e3)) !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 0 8px 8px !important;
+}
+
+.panel-tabset .tab-content .tab-pane {
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background-color: transparent !important;
+}
+
+.panel-tabset .tab-content div.sourceCode {
+    margin: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+}
+
+.panel-tabset .tab-content div.sourceCode pre.sourceCode {
+    padding: 16px 20px !important;
+    margin: 0 !important;
+}
+
 /* ==========================================================================
    PREMIUM BOOTSTRAP-CONSISTENT CSS ANIMATION UTILITIES
    ========================================================================== */
+
 
 /* --- LINE-BY-LINE REVEAL ANIMATION --- */
 @keyframes reveal-line {
