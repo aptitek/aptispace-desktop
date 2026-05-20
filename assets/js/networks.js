@@ -450,6 +450,8 @@ export function renderCablingGraph(container, {
     ])
   );
 
+  const WIRE_COLORS = [SOL.cyan, SOL.magenta, SOL.orange, SOL.violet, SOL.blue];
+
   // ── Layout ──────────────────────────────────────
   const maxRows = Math.max(leftItems.length, rightItems.length);
   const ROW_H = 64;
@@ -594,7 +596,7 @@ export function renderCablingGraph(container, {
       const srcIsLeft = src.group === "left";
       const x1 = srcIsLeft ? src.x + 120 : src.x - 120;
       const y1 = src.y;
-      const x2 = srcIsLeft ? tgt.x - 120 : tgt.x + 120;
+      const x2 = tgt.group === "cursor" ? tgt.x : (srcIsLeft ? tgt.x - 120 : tgt.x + 120);
       const y2 = tgt.y;
 
       const dx = Math.abs(x2 - x1) * 0.55;
@@ -604,7 +606,7 @@ export function renderCablingGraph(container, {
       ctx.bezierCurveTo(x1 + dx, y1, x2 - dx, y2, x2, y2);
 
       const ci = link.colorIndex ?? 0;
-      const baseColor = WIRE_COLORS[ci % WIRE_COLORS.length];
+      const baseColor = link.isDragging ? SOL.yellow : WIRE_COLORS[ci % WIRE_COLORS.length];
 
       // Determine state
       let state = null;
@@ -705,6 +707,170 @@ export function renderCablingGraph(container, {
   const margin = 24; // 24px padding on each side
   const desiredZoom = (W - 2 * margin) / virtualWidth;
   graph.zoom(desiredZoom).centerAt(0, 0);
+
+  // ── Drag and Drop & Click Interaction Logic ────
+  const canvas = container.querySelector("canvas");
+
+  let dragStartNode = null;
+  let dummyNode = null;
+  let dragLink = null;
+  let startX = 0;
+  let startY = 0;
+  let hasDragged = false;
+
+  // Helper to find node under pointer (x, y are graph coordinates)
+  const findNodeAtCoords = (gx, gy, groupFilter) => {
+    return nodes.find(node => {
+      if (groupFilter && node.group !== groupFilter) return false;
+      const isLeft = node.group === "left";
+      const socketX = isLeft ? node.x + 120 : node.x - 120;
+      const minX = Math.min(node.x - 100, socketX - 14);
+      const maxX = Math.max(node.x + 100, socketX + 14);
+      const minY = node.y - 22;
+      const maxY = node.y + 22;
+      return gx >= minX && gx <= maxX && gy >= minY && gy <= maxY;
+    });
+  };
+
+  if (canvas) {
+    canvas.addEventListener("pointerdown", (e) => {
+      if (validation) return; // Prevent interaction if validated
+      
+      const rect = canvas.getBoundingClientRect();
+      const px = e.clientX - rect.left;
+      const py = e.clientY - rect.top;
+      
+      // Convert screen coords to graph coords
+      const gc = graph.screen2GraphCoords(px, py);
+      
+      // We only start dragging if clicked on a left node
+      const clickedNode = findNodeAtCoords(gc.x, gc.y, "left");
+      if (clickedNode) {
+        e.preventDefault();
+        
+        startX = e.clientX;
+        startY = e.clientY;
+        hasDragged = false;
+        dragStartNode = clickedNode;
+        
+        // Temporarily highlight the node as active
+        activeLeft = clickedNode.id;
+        graph.setActiveLeft(activeLeft);
+        
+        canvas.setPointerCapture(e.pointerId);
+      }
+    });
+
+    canvas.addEventListener("pointermove", (e) => {
+      if (!dragStartNode) return;
+      e.preventDefault();
+      
+      const rect = canvas.getBoundingClientRect();
+      const px = e.clientX - rect.left;
+      const py = e.clientY - rect.top;
+      const gc = graph.screen2GraphCoords(px, py);
+      
+      if (!hasDragged) {
+        const dist = Math.hypot(e.clientX - startX, e.clientY - startY);
+        if (dist > 5) {
+          hasDragged = true;
+          
+          // Initialize dummy cursor node and dragging link
+          dummyNode = {
+            id: "TEMP_CURSOR",
+            group: "cursor",
+            x: gc.x,
+            y: gc.y,
+            fx: gc.x,
+            fy: gc.y
+          };
+          
+          dragLink = {
+            source: dragStartNode,
+            target: dummyNode,
+            isDragging: true,
+            colorIndex: leftItems.findIndex(it => it.id === dragStartNode._srcId)
+          };
+        }
+      }
+      
+      if (hasDragged && dummyNode) {
+        // Update dummy node coordinates
+        dummyNode.x = gc.x;
+        dummyNode.y = gc.y;
+        dummyNode.fx = gc.x;
+        dummyNode.fy = gc.y;
+        
+        // Update graph data with temporary drag elements
+        graph.graphData({
+          nodes: [...nodes, dummyNode],
+          links: [...links, dragLink]
+        });
+        
+        // Visual hover highlight on target nodes
+        const hoveredRight = findNodeAtCoords(gc.x, gc.y, "right");
+        hoverNode = hoveredRight ? hoveredRight.id : null;
+        container.style.cursor = hoveredRight ? "pointer" : "default";
+      }
+    });
+
+    canvas.addEventListener("pointerup", (e) => {
+      if (!dragStartNode) return;
+      e.preventDefault();
+      
+      canvas.releasePointerCapture(e.pointerId);
+      
+      const rect = canvas.getBoundingClientRect();
+      const px = e.clientX - rect.left;
+      const py = e.clientY - rect.top;
+      const gc = graph.screen2GraphCoords(px, py);
+      
+      const finalDragStart = dragStartNode;
+      const wasDragged = hasDragged;
+      
+      // Clean up drag variables
+      dragStartNode = null;
+      dummyNode = null;
+      dragLink = null;
+      hasDragged = false;
+      
+      // Restore clean graph data
+      graph.graphData({ nodes, links });
+      
+      if (wasDragged) {
+        // Find if dropped over a right node
+        const releasedRight = findNodeAtCoords(gc.x, gc.y, "right");
+        if (releasedRight) {
+          // Complete the link by simulating native click sequence on CablingManager
+          if (_onNodeClick) {
+            // First select the left node
+            _onNodeClick(finalDragStart);
+            // Then select the right node to establish connection
+            _onNodeClick(releasedRight);
+          }
+        } else {
+          // If dropped in the void, reset active selection
+          activeLeft = null;
+          graph.setActiveLeft(null);
+          // Toggle off selection in CablingManager
+          if (_onNodeClick) {
+            _onNodeClick(finalDragStart);
+          }
+        }
+      }
+    });
+
+    canvas.addEventListener("pointercancel", (e) => {
+      if (dragStartNode) {
+        canvas.releasePointerCapture(e.pointerId);
+        dragStartNode = null;
+        dummyNode = null;
+        dragLink = null;
+        hasDragged = false;
+        graph.graphData({ nodes, links });
+      }
+    });
+  }
 
   // ── Animation loop for dash offset ─────────────
   let animFrame;
