@@ -444,3 +444,16 @@ div.sidebar-item-container .sidebar-item-text.sidebar-link.active {
         border-color: rgba(var(--sol-red-rgb, 220, 50, 47), 0.2) !important;
     }
 }
+
+// ==========================================
+// 11. COPY-TO-CLIPBOARD FIX
+// ==========================================
+
+// Hide Copy to Clipboard buttons on hidden cells or active OJS widgets
+.sourceCode.cell-code.hidden ~ .code-copy-button {
+    display: none !important;
+}
+
+.cell:has(.observablehq) .code-copy-button {
+    display: none !important;
+}
