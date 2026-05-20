@@ -384,3 +384,63 @@ div.sidebar-item-container .sidebar-item-text.sidebar-link.active {
         background-color: var(--accent-danger, #dc322f) !important;
     }
 }
+
+// ==========================================
+// 10. PREMIUM NATIVE BOOTSTRAP BADGE RESKIN
+// ==========================================
+
+.badge {
+    font-family: var(--font-code, monospace) !important;
+    font-size: 0.85em !important;
+    font-weight: 600 !important;
+    padding: 3px 8px !important;
+    border-radius: 4px !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1px solid transparent !important;
+    
+    /* Default styled state */
+    &:not([class*="bg-"]):not([class*="is-"]) {
+        background-color: var(--badge-bg, rgba(147, 161, 161, 0.1)) !important;
+        color: var(--badge-color, #586e75) !important;
+        border-color: var(--badge-border, rgba(147, 161, 161, 0.2)) !important;
+    }
+
+    /* Fixed block variations */
+    &.is-block {
+        width: 18px !important;
+        height: 18px !important;
+        padding: 0 !important;
+        border-radius: 3px !important;
+    }
+
+    /* Info variations */
+    &.bg-info, &.is-info {
+        background-color: rgba(var(--sol-blue-rgb, 38, 139, 210), 0.1) !important;
+        color: var(--accent-info, #268bd2) !important;
+        border-color: rgba(var(--sol-blue-rgb, 38, 139, 210), 0.2) !important;
+    }
+
+    /* Success variations */
+    &.bg-success, &.is-success {
+        background-color: rgba(var(--sol-green-rgb, 133, 153, 0), 0.1) !important;
+        color: var(--accent-success, #859900) !important;
+        border-color: rgba(var(--sol-green-rgb, 133, 153, 0), 0.2) !important;
+    }
+
+    /* Warning variations */
+    &.bg-warning, &.is-warning {
+        background-color: rgba(var(--sol-orange-rgb, 203, 75, 22), 0.1) !important;
+        color: var(--accent-warning, #cb4b16) !important;
+        border-color: rgba(var(--sol-orange-rgb, 203, 75, 22), 0.2) !important;
+    }
+
+    /* Danger variations */
+    &.bg-danger, &.is-danger {
+        background-color: rgba(var(--sol-red-rgb, 220, 50, 47), 0.1) !important;
+        color: var(--accent-danger, #dc322f) !important;
+        border-color: rgba(var(--sol-red-rgb, 220, 50, 47), 0.2) !important;
+    }
+}

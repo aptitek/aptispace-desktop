@@ -130,6 +130,10 @@ $dark: $sol-base02 !default;
     
     --scrollbar-thumb: var(--sol-base1);
     --scrollbar-thumb-hover: var(--sol-base01);
+
+    --badge-bg: rgba(var(--sol-base1-rgb), 0.1);
+    --badge-color: var(--sol-base01);
+    --badge-border: rgba(var(--sol-base1-rgb), 0.2);
 }
 
 /* Explicit Dark Theme Overrides */
@@ -164,6 +168,10 @@ $dark: $sol-base02 !default;
     
     --scrollbar-thumb: var(--sol-base01);
     --scrollbar-thumb-hover: var(--sol-base0);
+
+    --badge-bg: rgba(var(--sol-base01-rgb), 0.15);
+    --badge-color: var(--sol-base1);
+    --badge-border: rgba(var(--sol-base01-rgb), 0.25);
 }
 
 /* System-level Dark Preference Auto Overrides */
@@ -199,5 +207,9 @@ $dark: $sol-base02 !default;
         
         --scrollbar-thumb: var(--sol-base01);
         --scrollbar-thumb-hover: var(--sol-base0);
+
+        --badge-bg: rgba(var(--sol-base01-rgb), 0.15);
+        --badge-color: var(--sol-base1);
+        --badge-border: rgba(var(--sol-base01-rgb), 0.25);
     }
 }
