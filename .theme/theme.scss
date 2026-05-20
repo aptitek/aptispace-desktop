@@ -145,91 +145,135 @@ div.sidebar-item-container .sidebar-item-text.sidebar-link.active {
 }
 
 // ==========================================
-// 6. MERMAID DIAGRAMS
+// 6. MERMAID SOLARIZED STYLING & HORIZONTAL CENTERING (Premium Card Style)
 // ==========================================
 
-/* Ciblage global du conteneur Mermaid */
-.cell-output-display .mermaid {
+/* Ciblage global du conteneur Mermaid avec style de carte Premium macOS */
+.cell-output-display .mermaid,
+.cell-output-display div:has(> svg.mermaid-js) {
     font-family: $font-family-code !important;
-    background-color: transparent !important;
-}
-
-/* 1. LES BOITES (Nœuds) */
-/* Force le beige foncé ($sol-base2) et les bordures grises ($sol-base01) */
-g.node rect,
-g.node circle,
-g.node polygon,
-g.node path {
-    fill: $sol-base2 !important;
-    stroke: $sol-base01 !important;
-    stroke-width: 1.5px !important;
-}
-
-/* 2. LE TEXTE DANS LES BOITES */
-/* Gris foncé ($sol-base00) */
-g.node .label {
-    color: $sol-base00 !important;
-    font-family: $font-family-code !important;
-    font-weight: 500;
-}
-
-/* Hack pour le texte HTML dans Mermaid */
-g.node .nodeLabel,
-g.node .label div {
-    color: $sol-base00 !important;
-    background-color: transparent !important;
-}
-
-/* 3. LES LIENS (Flèches) */
-/* Gris clair ($sol-base1) */
-.edgePath .path {
-    stroke: $sol-base1 !important;
-    stroke-width: 2px !important;
-}
-
-/* Les pointes de flèches (Markers) */
-#mermaid-defs marker path,
-marker path {
-    fill: $sol-base1 !important;
-    stroke: $sol-base1 !important;
-}
-
-/* 4. LES FORMES SPÉCIALES */
-g.node polygon {
-    fill: $sol-base3 !important;
-}
-
-/* 5. NOTES (Post-it) */
-g.note rect {
-    fill: $sol-base3 !important;
-    stroke: $sol-yellow !important;
-}
-
-g.note .label {
-    color: $sol-base00 !important;
-    font-family: $font-family-code !important;
-}
-
-/* 6. ÉTIQUETTES SUR LES FLÈCHES */
-g.edgeLabel,
-.edgeLabel {
-    color: $sol-base00 !important;
-    fill: $sol-base00 !important;
-    font-family: $font-family-code !important;
-}
-
-g.edgeLabel p {
     background-color: $sol-base3 !important;
-    color: $sol-base00 !important;
-    font-family: $font-family-code !important;
-    padding: 2px 4px;
-    font-size: 0.9em;
-}
 
-g.edgeLabel rect {
-    fill: $sol-base3 !important;
-    opacity: 1 !important;
-    stroke: none !important;
+    svg {
+        font-size: 16px !important;
+        max-width: 100% !important;
+        height: auto !important;
+    }
+    border: 1px solid $sol-base2 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba($sol-base03, 0.05) !important;
+    margin: 2rem auto !important;
+    padding: 48px 24px 24px 24px !important; // 48px top padding for absolute macos dots
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+    overflow: auto !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+
+    &:hover {
+        box-shadow: 0 8px 24px rgba($sol-base03, 0.08) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    // Built-in premium macOS-style window header decoration (like the dynamic simulators)
+    &::before {
+        content: "" !important;
+        position: absolute !important;
+        top: 14px !important;
+        left: 16px !important;
+        width: 8px !important;
+        height: 8px !important;
+        background-color: #{$sol-red} !important;
+        border-radius: 50% !important;
+        box-shadow: 14px 0 0 #{$sol-yellow}, 28px 0 0 #{$sol-green} !important;
+        opacity: 0.85 !important;
+        z-index: 10 !important;
+    }
+
+    /* 1. LES BOITES (Nœuds) */
+    /* Force le beige foncé ($sol-base2) et les bordures grises ($sol-base01) */
+    g.node rect,
+    g.node circle,
+    g.node polygon,
+    g.node path {
+        fill: $sol-base2 !important;
+        stroke: $sol-base01 !important;
+        stroke-width: 1.5px !important;
+    }
+
+    /* 2. LE TEXTE DANS LES BOITES */
+    /* Gris foncé ($sol-base00) */
+    g.node .label {
+        color: $sol-base00 !important;
+        font-family: $font-family-code !important;
+        font-weight: 500;
+        font-size: 16px !important;
+    }
+
+    /* Hack pour le texte HTML dans Mermaid */
+    g.node .nodeLabel,
+    g.node .label div {
+        color: $sol-base00 !important;
+        background-color: transparent !important;
+        font-size: 16px !important;
+    }
+
+    /* 3. LES LIENS (Flèches) */
+    /* Gris clair ($sol-base1) */
+    .edgePath .path {
+        stroke: $sol-base1 !important;
+        stroke-width: 2px !important;
+    }
+
+    /* Les pointes de flèches (Markers) */
+    #mermaid-defs marker path,
+    marker path {
+        fill: $sol-base1 !important;
+        stroke: $sol-base1 !important;
+    }
+
+    /* 4. LES FORMES SPÉCIALES */
+    g.node polygon {
+        fill: $sol-base3 !important;
+    }
+
+    /* 5. NOTES (Post-it) */
+    g.note rect {
+        fill: $sol-base3 !important;
+        stroke: $sol-yellow !important;
+    }
+
+    g.note .label {
+        color: $sol-base00 !important;
+        font-family: $font-family-code !important;
+        font-size: 16px !important;
+    }
+
+    /* 6. ÉTIQUETTES SUR LES FLÈCHES */
+    g.edgeLabel,
+    .edgeLabel {
+        color: $sol-base00 !important;
+        fill: $sol-base00 !important;
+        font-family: $font-family-code !important;
+        font-size: 16px !important;
+    }
+
+    g.edgeLabel p {
+        background-color: $sol-base3 !important;
+        color: $sol-base00 !important;
+        font-family: $font-family-code !important;
+        padding: 2px 4px;
+        font-size: 0.9em !important;
+    }
+
+    g.edgeLabel rect {
+        fill: $sol-base3 !important;
+        opacity: 1 !important;
+        stroke: none !important;
+    }
 }
 
 // ==========================================

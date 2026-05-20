@@ -8,6 +8,7 @@ project:
   resources:
     - "lab/**"
     - "assets/**"
+    - "**/_*.qmd"
 
 filters:
   - filetree

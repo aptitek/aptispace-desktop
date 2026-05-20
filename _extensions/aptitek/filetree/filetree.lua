@@ -13,34 +13,119 @@ local function get_icon(filename)
     else return "bi-file-earmark" end
 end
 
+local doc_dir = nil
+local project_dir = nil
+
+local function get_dirs()
+    if not doc_dir then
+        if quarto and quarto.doc and quarto.doc.input_file then
+            doc_dir = quarto.doc.input_file:match("(.+)/[^/]+$")
+        else
+            doc_dir = "."
+        end
+    end
+    if not project_dir then
+        if quarto and quarto.project and quarto.project.directory then
+            project_dir = quarto.project.directory
+        else
+            project_dir = os.getenv("QUARTO_PROJECT_DIR") or "."
+        end
+    end
+    return doc_dir, project_dir
+end
+
+local function resolve_to_absolute(path)
+    if not path then return nil end
+    if path:match("^%a+://") then
+        return nil -- External URL
+    end
+
+    local d_dir, p_dir = get_dirs()
+
+    -- If the path starts with "/" or "lab/" or is project-relative
+    if path:sub(1, 1) == "/" then
+        return p_dir .. path
+    elseif path:sub(1, 4) == "lab/" then
+        return p_dir .. "/" .. path
+    elseif path:sub(1, 3) == "../" or path:sub(1, 2) == "./" then
+        -- Relative to document directory
+        return d_dir .. "/" .. path
+    else
+        -- Default: try project-relative first, if not found try document-relative
+        local proj_path = p_dir .. "/" .. path
+        local f = io.open(proj_path, "r")
+        if f then
+            io.close(f)
+            return proj_path
+        else
+            return d_dir .. "/" .. path
+        end
+    end
+end
+
 local function get_href(path, filename)
     local ext = filename:match("^.+(%..+)$")
     if not ext then return path end
     ext = ext:lower()
 
-    -- Ensure path starts with / if it doesn't (assuming relative to root for viewer)
-    -- But Quarto resolves links. Let's assume the user provided path is correct for now.
-    -- We might need to prefix with / if it's relative and viewer is at /assets/viewer.html
-
+    local _, p_dir = get_dirs()
+    local abs_path = resolve_to_absolute(path)
     local web_path = path
-    if path:sub(1, 1) ~= "/" then
-        web_path = "/" .. path
+    if abs_path then
+        -- Determine web path relative to project root
+        local rel_path = abs_path
+        if abs_path:sub(1, #p_dir) == p_dir then
+            rel_path = abs_path:sub(#p_dir + 2)
+        end
+        if rel_path:sub(1, 1) ~= "/" then
+            web_path = "/" .. rel_path
+        else
+            web_path = rel_path
+        end
     end
 
     local is_binary = false
-    local f = io.open(path, "rb")
-    if f then
-        local bytes = f:read(1024)
-        if bytes and bytes:find("\0") then
-            is_binary = true
+    if abs_path then
+        local f = io.open(abs_path, "rb")
+        if f then
+            local bytes = f:read(1024)
+            if bytes and bytes:find("\0") then
+                is_binary = true
+            end
+            f:close()
         end
-        f:close()
     end
 
     if ext == ".ipynb" then
         -- Treat as fully rendered HTML file (Quarto renders .ipynb to .html)
         -- We want to show it statically in viewer.html
         local html_path = web_path:gsub("%.ipynb$", ".html")
+        
+        -- Auto-render notebook to HTML in source folder if not already done or if notebook is newer
+        if abs_path then
+            local abs_html_path = abs_path:gsub("%.ipynb$", ".html")
+            
+            local check_cmd = string.format("[ '%s' -nt '%s' ]", abs_html_path, abs_path)
+            local ret = os.execute(check_cmd)
+            local html_is_newer = (ret == 0 or ret == true)
+            
+            if not html_is_newer then
+                local theme_scss = p_dir .. "/.theme/theme.scss"
+                local f_scss = io.open(theme_scss, "r")
+                local theme_arg = "-M theme:solar"
+                if f_scss then
+                    f_scss:close()
+                    theme_arg = string.format("-M theme=\"[solar, '%s']\"", theme_scss)
+                end
+                
+                local cmd = string.format(
+                    "quarto render '%s' --to html %s -M mainfont:Recursive -M monofont:Recursive -M highlight-style:solarized -M code-overflow:wrap -M toc:true -M code-copy:true -M html-math-method:katex",
+                    abs_path, theme_arg
+                )
+                os.execute(cmd)
+            end
+        end
+
         -- URL encode path just in case
         local safe_path = html_path:gsub(" ", "%20")
         return "/assets/viewer.html#file=" .. safe_path .. "&mode=render"
@@ -48,8 +133,6 @@ local function get_href(path, filename)
     elseif is_binary == false then
         -- Use static viewer
         -- Need to URL encode the path
-        -- Lua doesn't have built-in urlencode, doing simple one or minimal
-        -- Since we don't have python's urllib, we hope path is simple or we use pandoc's util if available?
         -- Only minimal replacements: space to %20
         local safe_path = web_path:gsub(" ", "%20")
         return "/assets/viewer.html#file=" .. safe_path
@@ -60,17 +143,49 @@ local function get_href(path, filename)
     end
 end
 
+local function split_name_desc(text)
+    local name, desc = text:match("^([^%(]+)(.*)$")
+    if not name then
+        name = text
+        desc = ""
+    end
+    -- Trim whitespace
+    name = name:gsub("^%s*(.-)%s*$", "%1")
+    desc = desc:gsub("^%s*(.-)%s*$", "%1")
+    return name, desc
+end
+
+local function format_item_html(name, desc, icon_class, is_link, url, frame_name, container_id)
+    local desc_html = ""
+    if desc ~= "" then
+        desc_html = string.format(' <span class="filetree-comment">%s</span>', desc)
+    end
+    
+    local name_html = string.format('<span class="filetree-name">%s</span>', name)
+    
+    if is_link then
+        return string.format(
+            '<li class="file"><a href="#" class="filetree-link" data-url="%s" data-frame="%s" data-container="%s"><i class="bi %s file-icon"></i> %s%s</a></li>',
+            url, frame_name, container_id, icon_class, name_html, desc_html
+        )
+    else
+        local li_class = "file-leaf"
+        local icon_color_class = "file-icon"
+        -- If it represents a directory
+        if name:find("/$") then
+            li_class = "folder-leaf"
+            icon_color_class = "folder-icon"
+        end
+        return string.format(
+            '<li class="%s"><span><i class="bi %s %s"></i> %s%s</span></li>',
+            li_class, icon_class, icon_color_class, name_html, desc_html
+        )
+    end
+end
+
 local function render_item(item, frame_name, container_id)
     -- Item is a Block (Plain or Para) containing Link or Str
     -- or a BulletList (subfolder)
-
-    -- We need to check if it's a folder (has sublist) or file
-    -- But pandoc AST for BulletList is [[Blocks], [Blocks], ...]
-    -- Often: [Para(Link), BulletList(...)] is how a folder with children looks in Markdown list?
-    -- Actually:
-    -- - Folder
-    --   - Child
-    -- Is represented as one item containing [Para(Str "Folder"), BulletList(...)]
 
     local blocks = item
     local is_folder = false
@@ -83,17 +198,10 @@ local function render_item(item, frame_name, container_id)
             is_folder = true
             sublist = block
         elseif block.t == "Para" or block.t == "Plain" then
-            -- Check content
-            -- Usually [Link] or [Str]
-            -- We extract text or link
+            text = pandoc.utils.stringify(block)
             pandoc.walk_block(block, {
-                Link = function(el) link = el end,
-                Str = function(el) if text == "" then text = el.text end end,
-                Code = function(el) if text == "" then text = el.text end end
+                Link = function(el) link = el end
             })
-            if not text and link then
-                text = pandoc.utils.stringify(link.content)
-            end
         end
     end
 
@@ -103,9 +211,16 @@ local function render_item(item, frame_name, container_id)
         if link then folder_name = pandoc.utils.stringify(link.content) end
         if folder_name == "" then folder_name = "Folder" end
 
+        local f_name, f_desc = split_name_desc(folder_name)
+        local desc_html = ""
+        if f_desc ~= "" then
+            desc_html = string.format(' <span class="filetree-comment">%s</span>', f_desc)
+        end
+        local name_html = string.format('<span class="filetree-name">%s</span>', f_name)
+
         content = content ..
-            '<li class="folder"><details open><summary><i class="bi bi-chevron-right folder-arrow"></i>'
-            .. folder_name .. '</summary><ul>'
+            '<li class="folder"><details open><summary><i class="bi bi-chevron-right folder-arrow"></i><i class="bi bi-folder-fill folder-icon"></i> '
+            .. name_html .. desc_html .. '</summary><ul>'
 
         if sublist then
             for _, child_item in ipairs(sublist.content) do
@@ -116,59 +231,55 @@ local function render_item(item, frame_name, container_id)
         content = content .. '</ul></details></li>'
         return content
     else
-        -- File
+        -- Leaf node (File or empty Directory)
         if not link then
-            -- Plain text in list, maybe just a file name without link?
-            -- If no link provided, we can't really open it. Treat as disabled or just text.
-            return '<li class="file"><span style="opacity:0.5"><i class="bi bi-file-earmark"></i> ' ..
-                text .. '</span></li>'
+            local is_dir = text:find("/%s") or text:find("/$")
+            local f_name, f_desc = split_name_desc(text)
+            local icon = is_dir and "bi-folder-fill" or "bi-file-earmark"
+            
+            if not is_dir then
+                -- Try to extract extension from first word
+                local first_word = f_name:match("^%s*([^%s]+)") or f_name
+                icon = get_icon(first_word)
+            end
+            
+            return format_item_html(f_name, f_desc, icon, false, nil, nil, nil)
         end
 
         local path = link.target
-        local filename = text
-        if filename == "" then filename = path:match("^.+/(.+)$") or path end
+        local f_name, f_desc = split_name_desc(text)
+        if f_name == "" then f_name = path:match("^.+/(.+)$") or path end
 
-        local icon = get_icon(filename)
-        local final_url = get_href(path, filename)
+        local is_dir = f_name:find("/$") or path:find("/$")
+        local icon = is_dir and "bi-folder-fill" or get_icon(path)
+        local final_url = get_href(path, f_name)
 
-        -- Use data attributes for the event listener
-        return string.format(
-            '<li class="file"><a href="#" class="filetree-link" data-url="%s" data-frame="%s" data-container="%s"><i class="bi %s"></i> %s</a></li>'
-            ,
-            final_url, frame_name, container_id, icon, filename
-        )
+        return format_item_html(f_name, f_desc, icon, true, final_url, frame_name, container_id)
     end
-
 end
 
-local function generate_zip(zip_path, source_dir)
-    -- zip_path: where to save the zip (e.g., "_site/lab/TP1.zip")
-    -- source_dir: what to zip (e.g., "lab/TP1")
-
+local function generate_zip(abs_zip_path, abs_source_dir)
     -- Ensure the directory for the zip exists
-    local zip_dir = zip_path:match("(.+)/[^/]+$")
+    local zip_dir = abs_zip_path:match("(.+)/[^/]+$")
     if zip_dir then
         os.execute("mkdir -p '" .. zip_dir .. "'")
     end
 
-    -- Command: zip -r -q {zip_path} {source_dir}
-    -- We assume source_dir is relative to project root
-    local cmd = string.format("zip -r -q '%s' '%s'", zip_path, source_dir)
+    -- To avoid absolute paths in the zip, we cd into the parent directory of abs_source_dir,
+    -- and run zip on the folder name.
+    local parent_dir, folder_name = abs_source_dir:match("(.+)/([^/]+)$")
+    if not parent_dir then
+        parent_dir = "."
+        folder_name = abs_source_dir
+    end
+
+    local cmd = string.format("cd '%s' && zip -r -q '%s' '%s'", parent_dir, abs_zip_path, folder_name)
     os.execute(cmd)
 end
 
 return {
     ["filetree"] = function(args, kwargs, meta)
         -- This is a custom block: ::: {.filetree} ... :::
-        -- But wait, standard Div filter signature is (div)
-        -- If registered as 'filetree' in custom Lua module, it might be for a Shortcode?
-        -- The user wants "remplace l'extension actuelle".
-        -- The previous extension returned: ["filetree"] = function(args, kwargs) ... which is a Shortcode.
-        -- Shortcodes can't contain block content (like a list) easily.
-        -- So we should probably keep it as a Div filter -> `function Div(div)`
-        -- BUT the user might use it as shortcode? No, shortcode is {{< filetree >}}.
-        -- New requirement: "structure de liste Markdown simple".
-        -- This implies using a Div `::: {.filetree}`
     end,
 
     Div = function(div)
@@ -181,27 +292,65 @@ return {
             local title = div.attributes["title"] or "EXPLORATEUR"
             local zip_link = div.attributes["zip"]
 
+            local d_dir, p_dir = get_dirs()
+
             local zip_html = ""
             if zip_link then
                 local zip_name = zip_link:match("^.+/(.+)$") or zip_link
-                zip_html = string.format('<a href="%s" class="ide-download-btn" title="Download %s"><i class="bi bi-file-earmark-zip-fill"></i> ZIP</a>'
-                    , zip_link, zip_name)
 
-                -- Determine output path in _site
-                -- zip_link is like "lab/TP1.zip"
-                -- we want to write to "_site/lab/TP1.zip"
-                local site_zip_path = "_site/" .. zip_link
+                -- Determine the source directory from the first local file in the tree
+                local first_local_link = nil
+                for _, block in ipairs(div.content) do
+                    if block.t == "BulletList" then
+                        pandoc.walk_block(block, {
+                            Link = function(el)
+                                if not first_local_link and el.target and not el.target:match("^%a+://") then
+                                    first_local_link = el.target
+                                end
+                            end
+                        })
+                    end
+                end
 
-                -- Check if it exists in _site
+                local source_dir = nil
+                if first_local_link then
+                    source_dir = first_local_link:match("(.+)/[^/]+$")
+                end
+                if not source_dir then
+                    source_dir = zip_link:match("(.+)%.zip$")
+                end
+
+                -- Resolve paths to absolute paths
+                local abs_zip_path = resolve_to_absolute(zip_link)
+                local abs_source_dir = resolve_to_absolute(source_dir)
+
+                -- Compute output zip path in _site directory
+                local site_zip_path = nil
+                local web_zip_url = zip_link
+                if quarto and quarto.project and quarto.project.output_directory and abs_zip_path then
+                    local zip_rel_path = abs_zip_path:sub(#p_dir + 2)
+                    site_zip_path = quarto.project.output_directory .. "/" .. zip_rel_path
+                    web_zip_url = "/" .. zip_rel_path
+                else
+                    if quarto and quarto.doc and quarto.doc.output_file then
+                        local output_doc_dir = quarto.doc.output_file:match("(.+)/[^/]+$")
+                        site_zip_path = output_doc_dir .. "/" .. zip_link
+                    else
+                        site_zip_path = "_site/" .. zip_link
+                    end
+                    web_zip_url = zip_link
+                end
+
+                zip_html = string.format('<a href="%s" class="ui-ide-download" title="Download %s"><i class="bi bi-file-earmark-zip-fill"></i> ZIP</a>'
+                    , web_zip_url, zip_name)
+
+                -- Check if zip exists on disk in site output directory
                 local f = io.open(site_zip_path, "r")
                 if f ~= nil then
                     io.close(f)
                 else
-                    -- source folder is inferred from zip_link (stripping .zip)
-                    -- e.g. "lab/TP1.zip" -> "lab/TP1"
-                    local source_dir = zip_link:match("(.+)%.zip$")
-                    if source_dir then
-                        generate_zip(site_zip_path, source_dir)
+                    if abs_source_dir then
+                        generate_zip(site_zip_path, abs_source_dir)
                     end
                 end
             end
@@ -236,17 +385,17 @@ return {
             end
 
             local html = string.format([[
-<div class="ide-container" id="%s">
-  <div class="ide-sidebar">
-    <div class="ide-header-row">
-        <span class="ide-title">%s</span>
+<div class="ui-ide" id="%s">
+  <div class="ui-ide-sidebar">
+    <div class="ui-ide-header">
+        <span class="ui-ide-title">%s</span>
         %s
     </div>
-    <ul class="file-tree-list">
+    <ul class="ui-ide-list">
         %s
     </ul>
   </div>
-  <div class="ide-main">
+  <div class="ui-ide-main">
     <iframe name="%s" src="about:blank" onload="this.style.opacity=1"></iframe>
   </div>
   <script>

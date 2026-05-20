@@ -39,6 +39,18 @@
             font-variation-settings: 'MONO' 1;
         }
 
+        body.is-render-mode {
+            background-color: var(--bg-color) !important;
+            color: var(--text-color) !important;
+            font-family: 'Recursive', sans-serif;
+            font-variation-settings: 'MONO' 0, 'CASL' 0, 'slnt' 0, 'CRSV' 0.5;
+        }
+
+        body.is-render-mode code, body.is-render-mode pre code {
+            font-family: var(--code-font);
+            font-variation-settings: 'MONO' 1;
+        }
+
         /* --- 2. CONTAINER --- */
         .sourceCode {
             position: relative;
@@ -166,11 +178,21 @@
         try {
             if (window.parent && window.parent !== window) {
                 const parentStyle = window.parent.getComputedStyle(window.parent.document.documentElement);
+                const parentBodyStyle = window.parent.getComputedStyle(window.parent.document.body);
                 const root = document.documentElement;
+                
+                // Inherit computed page background and text colors
+                const bg = parentBodyStyle.backgroundColor;
+                const fg = parentBodyStyle.color;
+                if (bg) root.style.setProperty('--bg-color', bg);
+                if (fg) root.style.setProperty('--text-color', fg);
+
+                // Sync link color if bootstrap sets it
+                const linkColor = parentStyle.getPropertyValue('--bs-link-color');
+                if (linkColor) root.style.setProperty('--link-color', linkColor);
+
                 const varsToSync = [
-                    '--bg-color', '--text-color', '--border-color',
-                    '--link-color', '--success-color', '--error-color',
-                    '--font-code'
+                    '--border-color', '--success-color', '--error-color', '--font-code'
                 ];
 
                 varsToSync.forEach(v => {
@@ -293,6 +315,7 @@
         } else {
             if (mode === 'render') {
                 // Static Render Mode
+                document.body.classList.add('is-render-mode');
                 codeEl.parentElement.style.display = 'none';
                 btn.style.display = 'none';
                 renderEl.style.display = 'block';

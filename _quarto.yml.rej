@@ -1,29 +1,19 @@
 --- _quarto.yml
 +++ _quarto.yml
-@@ -1,4 +1,4 @@
--cloudflare-project: "aptispace-desktop"
-+cloudflare-project: "aptispace-template"
- 
- project:
-   type: website
-@@ -14,17 +14,17 @@ filters:
+@@ -12,6 +12,7 @@ project:
+ filters:
+   - filetree
    - card
++  - timeline
  
  website:
--  title: "Développement Desktop"
-+  title: "Template"
-   # DÉSACTIVER l'indexation (Anti-Google)
-   search: false
--  site-url: "https://desktop.apti.space"
-+  site-url: "https://template.apti.space"
- 
-   
+   title: "Template"
+@@ -23,7 +24,7 @@ website:
    sidebar:
      # --- CONFIGURATION BRANDING ---
      logo: "assets/logo.svg"          # Chemin vers l'image
-     logo-href: "https://aptitek.io"  # Redirection externe vers votre site
--    logo-alt: "Aptispace"              # Texte alternatif pour l'accessibilité
-+    logo-alt: "Aptitek"              # Texte alternatif pour l'accessibilité
+-    logo-href: "https://aptitek.io"  # Redirection externe vers votre site
++    logo-href: "/"
+     logo-alt: "Aptitek"              # Texte alternatif pour l'accessibilité
      # ------------------------------
      style: "docked"
-     search: false
