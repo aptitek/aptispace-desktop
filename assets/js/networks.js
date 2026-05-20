@@ -543,12 +543,14 @@ export class CablingManager {
       this.connections[lid] = rid;
       this._connMap.set(lid, connection);
 
-      // Couleur par index de la pill gauche
+      // Couleur par index de la pill gauche (classe CSS data-color pour ciblage)
       const ci = this.leftItems.findIndex(it => it.id === lid);
       const colors = ["#2aa198","#d33682","#cb4b16","#6c71c4","#268bd2"];
       const stroke = colors[ci % colors.length];
       connection.setPaintStyle({ stroke, strokeWidth: 3 });
       connection.setHoverPaintStyle({ stroke: "#b58900", strokeWidth: 4 });
+      // Classe pour l'animation de flux CSS
+      connection.addClass("conn-active");
 
       this._clearActive();
       this.onStateUpdate(this.getState());
@@ -725,19 +727,13 @@ export class CablingManager {
 
     this.validated = true;
 
-    // Colorier les connexions selon leur validité
+    // Ajouter les classes CSS de validation (couleur + animation gérées en CSS)
     for (const [lid, conn] of this._connMap.entries()) {
       const rid       = this.connections[lid];
       const item      = this.leftItems.find(it => it.id === lid);
       const isCorrect = item && rid === item.match;
-      conn.setPaintStyle({
-        stroke: isCorrect ? "#859900" : "#dc322f",
-        strokeWidth: 4,
-      });
-      conn.setHoverPaintStyle({
-        stroke: isCorrect ? "#859900" : "#dc322f",
-        strokeWidth: 4,
-      });
+      conn.removeClass("conn-active");
+      conn.addClass(isCorrect ? "conn-correct" : "conn-incorrect");
     }
 
     // Force le re-rendu SVG immédiat (sans nécessiter un hover)
@@ -758,6 +754,10 @@ export class CablingManager {
     this._clearActive();
 
     if (this.jsp) {
+      // Supprimer les classes de validation avant de supprimer les connexions
+      this.jsp.getConnections().forEach(c => {
+        c.removeClass("conn-active conn-correct conn-incorrect");
+      });
       this.jsp.deleteAllConnections();
     }
 

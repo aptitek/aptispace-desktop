@@ -740,6 +740,9 @@ export class CablingManager {
       });
     }
 
+    // Force le re-rendu SVG immédiat (sans nécessiter un hover)
+    this.jsp.repaintEverything();
+
     // Bloquer les pills visuellement
     this.container.querySelectorAll(".cabling-pill").forEach(el => {
       el.style.cursor = "default";

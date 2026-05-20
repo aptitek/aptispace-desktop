@@ -148,36 +148,80 @@ import { CablingManager } from "./assets/js/networks.js"
 
 ```{=html}
 <style>
-/* ── jsPlumb Cabling Exercise ────────────────────────── */
+/* ── jsPlumb Cabling Exercise ────────────────────────────────────── */
 #cabling-canvas {
   padding: 24px 0;
   box-sizing: border-box;
+  overflow: visible !important;
 }
 
-/* Override jsPlumb SVG connector default stroke */
+/* ── Smooth transitions on all connectors ── */
 #cabling-canvas .jtk-connector path {
-  transition: stroke 0.25s ease, stroke-width 0.15s ease;
+  transition: stroke 0.3s ease;
 }
-
-/* Endpoint circles */
 #cabling-canvas .jtk-endpoint circle {
   transition: fill 0.2s ease;
 }
 
-/* Drag ghost connector */
-#cabling-canvas .jtk-dragging .jtk-connector path {
-  stroke-dasharray: 6 4;
-  opacity: 0.7;
+/* ── Flow animation: dashes moving along the cable (all active cables) ── */
+#cabling-canvas .conn-active path {
+  stroke-dasharray: 10 7;
+  animation: cable-flow 0.55s linear infinite;
 }
 
-/* Selected pill highlight */
+@keyframes cable-flow {
+  to { stroke-dashoffset: -17; }
+}
+
+/* ── Ghost connector during drag ── */
+#cabling-canvas .jtk-dragging path {
+  stroke-dasharray: 7 5;
+  opacity: 0.65;
+  animation: cable-flow 0.4s linear infinite;
+}
+
+/* ── Correct connection: green flowing glow ── */
+#cabling-canvas .conn-correct path {
+  stroke: #859900 !important;
+  stroke-width: 3.5 !important;
+  stroke-dasharray: 10 7;
+  animation: cable-flow-correct 0.75s linear infinite;
+  filter: drop-shadow(0 0 4px rgba(133, 153, 0, 0.6));
+}
+
+@keyframes cable-flow-correct {
+  to {
+    stroke-dashoffset: -17;
+    filter: drop-shadow(0 0 6px rgba(133, 153, 0, 0.9));
+  }
+}
+
+/* ── Incorrect connection: electric spark effect ── */
+#cabling-canvas .conn-incorrect path {
+  stroke: #dc322f !important;
+  stroke-width: 3 !important;
+  stroke-dasharray: 4 3;
+  animation: cable-spark 0.14s linear infinite;
+}
+
+@keyframes cable-spark {
+  0%   { stroke-dashoffset: 0;   filter: drop-shadow(0 0 2px #dc322f); }
+  20%  {                         filter: drop-shadow(0 0 11px #ff5555) drop-shadow(0 0 4px #fff4); }
+  40%  { stroke-dashoffset: -7;  filter: drop-shadow(0 0 2px #dc322f); }
+  60%  {                         filter: drop-shadow(0 0 14px #ff4444) drop-shadow(0 0 5px #ffa50066); }
+  80%  { stroke-dashoffset: -14; filter: drop-shadow(0 0 3px #dc322f); }
+  100% { stroke-dashoffset: -14; filter: drop-shadow(0 0 2px #dc322f); }
+}
+
+/* ── Selected pill highlight (click-to-connect) ── */
 .cabling-pill.is-active {
   border-color: #b58900 !important;
-  box-shadow: 0 0 0 3px rgba(181,137,0,0.35) !important;
+  box-shadow: 0 0 0 3px rgba(181, 137, 0, 0.35) !important;
   color: #b58900 !important;
 }
 </style>
 ```
+
 
 ::: {.card-header}
 🔌 Panneau de brassage des indices
