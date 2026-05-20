@@ -163,16 +163,6 @@ import { CablingManager } from "./assets/js/networks.js"
   transition: fill 0.2s ease;
 }
 
-/* ── Flow animation: dashes moving along the cable (all active cables) ── */
-#cabling-canvas .conn-active path {
-  stroke-dasharray: 10 7;
-  animation: cable-flow 0.55s linear infinite;
-}
-
-@keyframes cable-flow {
-  to { stroke-dashoffset: -17; }
-}
-
 /* ── Ghost connector during drag ── */
 #cabling-canvas .jtk-dragging path {
   stroke-dasharray: 7 5;
