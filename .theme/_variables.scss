@@ -109,6 +109,11 @@ $dark: $sol-base02 !default;
     --card-shadow-hover: 0 8px 24px rgba(var(--sol-base03-rgb), 0.05);
     --card-border-hover: rgba(var(--sol-base01-rgb), 0.4);
     
+    --shadow-tiny: 0 -2px 4px rgba(var(--sol-base03-rgb), 0.01);
+    --shadow-small: 0 4px 8px rgba(var(--sol-base03-rgb), 0.05);
+    --shadow-medium: 0 -2px 10px rgba(var(--sol-base03-rgb), 0.05);
+    --canvas-shadow-inset: inset 0 2px 8px rgba(var(--sol-base03-rgb), 0.08);
+    
     --card-header-bg: var(--sol-base2);
     --card-header-border: rgba(var(--sol-base01-rgb), 0.08);
     
@@ -146,6 +151,11 @@ $dark: $sol-base02 !default;
     --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     --card-shadow-hover: 0 12px 36px rgba(0, 0, 0, 0.22);
     --card-border-hover: var(--sol-base01);
+    
+    --shadow-tiny: 0 -2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-small: 0 4px 8px rgba(0, 0, 0, 0.2);
+    --shadow-medium: 0 -2px 10px rgba(0, 0, 0, 0.25);
+    --canvas-shadow-inset: inset 0 2px 8px rgba(0, 0, 0, 0.25);
     
     --card-header-bg: var(--sol-base02);
     --card-header-border: rgba(147, 161, 161, 0.1);
@@ -185,6 +195,11 @@ $dark: $sol-base02 !default;
         --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         --card-shadow-hover: 0 12px 36px rgba(0, 0, 0, 0.22);
         --card-border-hover: var(--sol-base01);
+        
+        --shadow-tiny: 0 -2px 4px rgba(0, 0, 0, 0.05);
+        --shadow-small: 0 4px 8px rgba(0, 0, 0, 0.2);
+        --shadow-medium: 0 -2px 10px rgba(0, 0, 0, 0.25);
+        --canvas-shadow-inset: inset 0 2px 8px rgba(0, 0, 0, 0.25);
         
         --card-header-bg: var(--sol-base02);
         --card-header-border: rgba(147, 161, 161, 0.1);
