@@ -36,20 +36,18 @@ export const terminalConsole = ({ header = "Processus", logs = [] }) => {
  */
 export const metricCard = ({ title, value, subtitle = "", trend = "neutral" }) => {
   const trendClassMap = {
-    positive: "is-success",
-    negative: "is-danger",
-    warning: "is-warning",
-    neutral: "is-debug"
+    positive: "text-success",
+    negative: "text-danger",
+    warning: "text-warning",
+    neutral: "text-info"
   };
   const colorClass = trendClassMap[trend] || trendClassMap.neutral;
 
   return `
-    <div class="ui-card ${colorClass}" style="flex: 1; min-width: 150px;">
-      <div class="ui-card-header">${title}</div>
-      <div class="ui-card-body">
-        <div class="ui-value atom-text-value">${utils.formatNumber(value)}</div>
-        ${subtitle ? `<div style="font-size: 0.85em; color: var(--sol-base01); margin-top: 4px;">${subtitle}</div>` : ''}
-      </div>
+    <div class="card card-metric">
+      <div class="card-metric-title">${title}</div>
+      <div class="card-metric-value ${colorClass}">${utils.formatNumber(value)}</div>
+      ${subtitle ? `<div class="text-muted" style="font-size: 0.85em;">${subtitle}</div>` : ''}
     </div>
   `;
 };
