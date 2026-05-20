@@ -328,3 +328,43 @@ div.sidebar-item-container .sidebar-item-text.sidebar-link.active {
     border: none;
     display: block;
 }
+
+// ==========================================
+// 9. NATIVE BOOTSTRAP PROGRESS BAR RESKIN
+// ==========================================
+
+.progress {
+    width: 100% !important;
+    background-color: var(--sol-base2, #eee8d5) !important;
+    border-radius: 6px !important;
+    height: 8px !important;
+    overflow: hidden !important;
+    display: flex !important;
+    margin: 10px 0 !important;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+    border: none !important;
+}
+
+.progress-bar {
+    height: 100% !important;
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    background-color: var(--sol-yellow, #b58900) !important; /* Default yellow progress */
+    box-shadow: none !important;
+
+    /* Color overrides based on Bootstrap utility names */
+    &.bg-info {
+        background-color: var(--sol-blue, #268bd2) !important;
+    }
+    
+    &.bg-success {
+        background-color: var(--sol-green, #859900) !important;
+    }
+
+    &.bg-warning {
+        background-color: var(--sol-orange, #cb4b16) !important;
+    }
+
+    &.bg-danger {
+        background-color: var(--sol-red, #dc322f) !important;
+    }
+}
