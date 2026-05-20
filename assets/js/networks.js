@@ -753,10 +753,6 @@ export function renderCablingGraph(container, {
         hasDragged = false;
         dragStartNode = clickedNode;
         
-        // Temporarily highlight the node as active
-        activeLeft = clickedNode.id;
-        graph.setActiveLeft(activeLeft);
-        
         canvas.setPointerCapture(e.pointerId);
       }
     });
@@ -840,23 +836,14 @@ export function renderCablingGraph(container, {
       if (wasDragged) {
         // Find if dropped over a right node
         const releasedRight = findNodeAtCoords(gc.x, gc.y, "right");
-        if (releasedRight) {
-          // Complete the link by simulating native click sequence on CablingManager
-          if (_onNodeClick) {
-            // First select the left node
-            _onNodeClick(finalDragStart);
-            // Then select the right node to establish connection
-            _onNodeClick(releasedRight);
-          }
-        } else {
-          // If dropped in the void, reset active selection
-          activeLeft = null;
-          graph.setActiveLeft(null);
-          // Toggle off selection in CablingManager
-          if (_onNodeClick) {
-            _onNodeClick(finalDragStart);
-          }
+        if (releasedRight && _onNodeClick) {
+          // Simulate the two-click sequence: select left, then connect to right
+          // CablingManager.handleClick manages all state (activeLeft, connections, sync)
+          _onNodeClick(finalDragStart);
+          _onNodeClick(releasedRight);
         }
+        // If dropped in void: just clean up; no state change needed
+        // (dragStartNode was never committed via _onNodeClick, so CablingManager state is clean)
       }
     });
 
