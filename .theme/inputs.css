@@ -88,20 +88,79 @@
     border-radius: 4px !important;
 }
 
-/* --- Standard Text Controls & Dropdowns (.form-control / .form-select) --- */
+/* --- Standard Text Controls & Dropdowns --- */
 .form-control,
-.form-select {
+.form-select,
+input[type="text"],
+input[type="number"],
+select {
     background-color: var(--input-bg, #fdf6e3) !important;
     border: 1px solid var(--input-border, #eee8d5) !important;
     color: var(--input-color, #657b83) !important;
     border-radius: 6px !important;
+    padding: 6px 12px !important;
+    font-size: 0.9rem !important;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
 }
 
 .form-control:focus,
-.form-select:focus {
+.form-select:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus {
     background-color: var(--input-bg, #fdf6e3) !important;
     border-color: var(--accent-primary, #268bd2) !important;
     box-shadow: 0 0 0 0.25rem rgba(var(--accent-primary-rgb, 38, 139, 210), 0.15) !important;
     color: var(--input-color, #657b83) !important;
+    outline: none !important;
 }
+
+input[type="number"] {
+    width: 60px !important;
+    text-align: center !important;
+}
+
+/* --- Default Range Sliders --- */
+input[type="range"] {
+    accent-color: var(--accent-primary, #268bd2) !important;
+    height: 6px !important;
+    background: var(--control-bg, #eee8d5) !important;
+    border-radius: 5px !important;
+    appearance: none !important;
+    cursor: pointer !important;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+    background: transparent !important;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    border-radius: 50% !important;
+}
+
+/* --- Typography Labels --- */
+label, 
+.observablehq--label {
+    font-family: var(--font-code, monospace) !important;
+    font-size: 0.75em !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    color: var(--scrollbar-thumb, #93a1a1) !important;
+    margin-right: 12px !important;
+    white-space: nowrap !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: none !important;
+}
+
+/* --- Numerical Output Display --- */
+output {
+    font-family: var(--font-code, monospace) !important;
+    font-size: 0.85em !important;
+    color: var(--control-fg, #586e75) !important;
+    margin-left: 10px !important;
+    margin-right: 15px !important;
+    flex: 0 0 auto !important;
+}
+
