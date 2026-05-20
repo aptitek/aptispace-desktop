@@ -112,3 +112,27 @@ export function createBar(divId, data, title = "Graphique", options = {}) {
 
   Plotly.newPlot(divId, [trace], layout, config);
 }
+
+/**
+ * 🌪️ Funnel Area (Pyramide/Entonnoir)
+ */
+export function createFunnel(divId, data, options = {}) {
+  const trace = {
+    type: 'funnelarea',
+    text: data.text,
+    values: data.values,
+    marker: { colors: options.colors },
+    textinfo: "text",
+    hoverinfo: "text",
+    ...options.trace
+  };
+
+  const layout = {
+    margin: { t: 10, b: 10, l: 10, r: 10 },
+    paper_bgcolor: 'transparent',
+    showlegend: false,
+    ...options.layout
+  };
+
+  Plotly.newPlot(divId, [trace], layout, { displayModeBar: false, responsive: true, ...options.config });
+}

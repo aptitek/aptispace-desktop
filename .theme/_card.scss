@@ -643,5 +643,111 @@
     line-height: 1.2 !important;
 }
 
+/* ==========================================================================
+   SIMULATEUR RAM (Classes spécifiques)
+   ========================================================================== */
 
+.font-code {
+    font-family: var(--font-code) !important;
+}
 
+.ram-byte-box {
+    width: 55px;
+    height: 55px;
+    background-color: var(--sol-base03) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    cursor: help;
+}
+
+/* ==========================================================================
+   SIMULATEUR CARTE MÈRE (Animations SVG)
+   ========================================================================== */
+
+/* Style de base des composants et des câbles */
+.mobo-part {
+    fill: var(--sol-base03);
+    stroke: var(--sol-base01);
+    stroke-width: 2px;
+    transition: all 0.3s ease;
+}
+.mobo-bus {
+    fill: none;
+    stroke: var(--sol-base02);
+    stroke-width: 4px;
+    stroke-dasharray: 8; /* Crée les pointillés */
+    transition: stroke 0.3s ease;
+}
+
+/* Classes actives injectées par OJS */
+.is-active-disk { 
+    fill: rgba(38, 139, 210, 0.1) !important; /* sol-blue */
+    stroke: var(--sol-blue) !important; 
+    filter: drop-shadow(0 0 8px rgba(38, 139, 210, 0.4));
+}
+.is-active-ram { 
+    fill: rgba(133, 153, 0, 0.1) !important; /* sol-green */
+    stroke: var(--sol-green) !important; 
+    filter: drop-shadow(0 0 8px rgba(133, 153, 0, 0.4));
+}
+.is-active-cpu { 
+    fill: rgba(203, 75, 22, 0.1) !important; /* sol-orange */
+    stroke: var(--sol-orange) !important; 
+    filter: drop-shadow(0 0 8px rgba(203, 75, 22, 0.4));
+}
+
+/* L'animation magique du flux de données */
+.is-flowing {
+    stroke: var(--sol-yellow) !important;
+    animation: dataFlow 0.5s linear infinite;
+}
+
+@keyframes dataFlow {
+    from { stroke-dashoffset: 16; }
+    to { stroke-dashoffset: 0; }
+}
+
+/* ==========================================================================
+   SIMULATEUR CACHE CPU
+   ========================================================================== */
+.cache-slot {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-code);
+    font-weight: bold;
+    font-size: 1.2rem;
+    background-color: var(--sol-base02);
+    border: 2px solid var(--sol-base01);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.cache-slot.is-empty {
+    color: var(--sol-base01);
+    background-color: transparent;
+    border-style: dashed;
+}
+
+/* Animations déclenchées par OJS */
+.flash-hit {
+    animation: animHit 0.6s ease-out;
+}
+.flash-miss {
+    animation: animMiss 0.6s ease-out;
+}
+
+@keyframes animHit {
+    0% { background-color: var(--sol-green); color: var(--sol-base3); transform: scale(1.1); }
+    100% { background-color: var(--sol-base02); transform: scale(1); }
+}
+@keyframes animMiss {
+    0% { background-color: var(--sol-red); color: var(--sol-base3); transform: translateX(5px); }
+    50% { transform: translateX(-5px); }
+    100% { background-color: var(--sol-base02); transform: translateX(0); }
+}

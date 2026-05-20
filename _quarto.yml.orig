@@ -12,8 +12,8 @@ project:
 
 filters:
   - filetree
+  - card
   - timeline
-  - live
 
 website:
   title: "Développement Desktop"
@@ -56,8 +56,6 @@ format:
     header-includes: |
       <meta name="robots" content="noindex, nofollow">
 
-    include-in-header:
-      - text: '<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>'
     include-after-body: assets/fix_links.html
 
   typst:

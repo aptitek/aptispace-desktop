@@ -109,5 +109,118 @@ export const utils = {
   formatNumber: (num, decimals = 3) => typeof num === 'number' ? num.toLocaleString(undefined, { maximumFractionDigits: decimals }) : num,
 
   // Tronque une chaîne avec la méthode standard slice
-  truncateText: (str, maxLength = 50) => typeof str === 'string' && str.length > maxLength ? str.slice(0, maxLength) + "…" : str
+  truncateText: (str, maxLength = 50) => typeof str === 'string' && str.length > maxLength ? str.slice(0, maxLength) + "…" : str,
+
+  /**
+   * 🎨 Utilitaire d'opacité couleur (Convertit Hex ou RGB en RGBA)
+   * Centralisé ici pour être partagé par le Canvas (networks) et l'UI globale.
+   */
+  rgba: (color, alpha) => {
+    if (!color) return color;
+    if (color.includes('rgb')) {
+      const matches = color.match(/\d+/g);
+      if (matches && matches.length >= 3) {
+        return `rgba(${matches[0]}, ${matches[1]}, ${matches[2]}, ${alpha})`;
+      }
+    }
+    const hex = color.replace('#', '').trim();
+    if (hex.length === 6) {
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+    return color;
+  }
+
 };
+/**
+ * 📊 Lit un tableau Markdown compilé et le transforme en tableau d'objets JS.
+ */
+export function parseTableData(selector) {
+  const table = document.querySelector(selector);
+  if (!table) return [];
+  const headers = Array.from(table.querySelectorAll("th")).map(th => th.textContent.trim());
+  const rows = Array.from(table.querySelectorAll("tbody tr"));
+  return rows.map(row => {
+    const cells = Array.from(row.querySelectorAll("td")).map(td => td.innerHTML.trim());
+    let rowData = {};
+    headers.forEach((h, i) => rowData[h] = cells[i]);
+    return rowData;
+  });
+}
+
+// =====================================================================
+// 🧩 MOTEUR DE TEMPLATES GÉNÉRIQUE
+// =====================================================================
+
+/**
+ * Fonction interne : Remplace les {{variables}} par leurs valeurs
+ */
+function applyTemplate(htmlString, data) {
+  let html = htmlString;
+  for (const [key, value] of Object.entries(data)) {
+    html = html.replace(new RegExp(`\\{\\{${key}\\}\\}`, 'g'), value);
+  }
+  return html;
+}
+
+/**
+ * Moteur 1 : Remplit un bloc unique (Ex: une carte de score)
+ */
+export function renderTemplate(elementOrSelector, data = {}) {
+  const container = typeof elementOrSelector === 'string' 
+    ? document.querySelector(elementOrSelector) 
+    : elementOrSelector;
+    
+  if (!container) return;
+
+  if (!container.dataset.tpl) container.dataset.tpl = container.innerHTML;
+  container.innerHTML = applyTemplate(container.dataset.tpl, data);
+}
+
+/**
+ * Moteur 2 : Génère une liste d'éléments à partir d'un modèle (Ex: puces de résultats)
+ */
+export function renderListTemplate(containerSelector, templateSelector, listData = []) {
+  const container = document.querySelector(containerSelector);
+  const tplElement = document.querySelector(templateSelector);
+  
+  if (!container || !tplElement) return;
+
+  if (!tplElement.dataset.tpl) tplElement.dataset.tpl = tplElement.innerHTML;
+  
+  container.innerHTML = ""; // On vide la liste
+  
+  listData.forEach(data => {
+    container.insertAdjacentHTML('beforeend', applyTemplate(tplElement.dataset.tpl, data));
+  });
+}
+
+// =====================================================================
+// 🎯 LOGIQUE SPÉCIFIQUE AU FEEDBACK DE CÂBLAGE
+// =====================================================================
+
+/**
+ * Orchestrateur : Utilise nos moteurs génériques pour cet exercice
+ */
+export function renderFeedbackUI(panelSelector, state, listData = []) {
+  const panel = document.querySelector(panelSelector);
+  if (!panel) return;
+
+  // 1. Affichage global du panneau
+  panel.style.display = state.status === "hidden" ? "none" : "block";
+  panel.querySelectorAll('.feedback-card').forEach(card => card.style.display = "none");
+
+  if (state.status === "hidden") return;
+
+  // 2. Affichage dynamique de la carte active via le Moteur 1
+  const activeCard = panel.querySelector(`.feedback-${state.status}`);
+  if (activeCard) {
+    activeCard.style.display = "block";
+    renderTemplate(activeCard, { score: state.score, total: state.total });
+  }
+
+  // 3. Affichage dynamique de la liste via le Moteur 2
+  renderListTemplate(`${panelSelector} .feedback-details`, `${panelSelector} .feedback-item-template`, listData);
+}

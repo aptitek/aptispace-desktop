@@ -8,6 +8,7 @@ import * as networks from "./networks.js";
 
 export { theme };
 
+//TODO: Delete ui entirely and use the new system with default quarto tags and such in the qmd files
 export const ui = {
   // Briques indivisibles (inlinées pour simplicité et compatibilité)
   text: ({ content, type = "body", color = "inherit" }) => {
@@ -324,23 +325,7 @@ export const ui = {
   },
 
   // 6. Utilitaire d'opacité couleur pour Plotly et OJS (Convertit Hex ou RGB en RGBA)
-  rgba: (color, alpha) => {
-    if (!color) return color;
-    if (color.includes('rgb')) {
-      const matches = color.match(/\d+/g);
-      if (matches && matches.length >= 3) {
-        return `rgba(${matches[0]}, ${matches[1]}, ${matches[2]}, ${alpha})`;
-      }
-    }
-    const hex = color.replace('#', '').trim();
-    if (hex.length === 6) {
-      const r = parseInt(hex.substring(0, 2), 16);
-      const g = parseInt(hex.substring(2, 4), 16);
-      const b = parseInt(hex.substring(4, 6), 16);
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    }
-    return color;
-  }
+  rgba: (color, alpha) => utils.rgba(color, alpha),
 };
 
 // Global fallback for OJS
