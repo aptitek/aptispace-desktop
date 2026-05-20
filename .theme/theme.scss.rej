@@ -1,0 +1,152 @@
+--- .theme/theme.scss
++++ .theme/theme.scss
+@@ -3,6 +3,8 @@
+ 
+ /*-- scss:rules --*/
+ @import url('https://fonts.googleapis.com/css2?family=Recursive:slnt,wght,CASL,CRSV,MONO@-15..0,300..1000,0..1,0..1,0..1&display=swap');
++@import "card.css";
++@import "inputs.css";
+ 
+ // ==========================================
+ // 2. CSS VARIABLES (Runtime Tokens)
+@@ -144,6 +146,22 @@ div.sidebar-item-container .sidebar-item-text.sidebar-link.active {
+     background-color: transparent;
+ }
+ 
++// ==========================================
++// 5.5 PREMIUM UI TOUCHES
++// ==========================================
++
++// Custom Scrollbars
++::-webkit-scrollbar {
++    width: 10px;
++    height: 10px;
++}
++
++::-webkit-scrollbar-thumb {
++    background: var(--scrollbar-thumb, rgba(147, 161, 161, 0.4));
++    border-radius: 10px;
++    &:hover { background: var(--scrollbar-thumb-hover, rgba(147, 161, 161, 0.8)); }
++}
++
+ // ==========================================
+ // 6. MERMAID SOLARIZED STYLING & HORIZONTAL CENTERING (Premium Card Style)
+ // ==========================================
+@@ -326,4 +344,117 @@ div.sidebar-item-container .sidebar-item-text.sidebar-link.active {
+     /* Default height */
+     border: none;
+     display: block;
++}
++
++// ==========================================
++// 9. NATIVE BOOTSTRAP PROGRESS BAR RESKIN
++// ==========================================
++
++.progress {
++    width: 100% !important;
++    background-color: var(--progressbar-bg, #eee8d5) !important;
++    border-radius: 6px !important;
++    height: 8px !important;
++    overflow: hidden !important;
++    display: flex !important;
++    margin: 10px 0 !important;
++    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05) !important;
++    border: none !important;
++}
++
++.progress-bar {
++    height: 100% !important;
++    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
++    background-color: var(--accent-warning, #b58900) !important; /* Default yellow progress */
++    box-shadow: none !important;
++
++    /* Color overrides based on Bootstrap utility names */
++    &.bg-info {
++        background-color: var(--accent-info, #268bd2) !important;
++    }
++    
++    &.bg-success {
++        background-color: var(--accent-success, #859900) !important;
++    }
++
++    &.bg-warning {
++        background-color: var(--accent-warning, #cb4b16) !important;
++    }
++
++    &.bg-danger {
++        background-color: var(--accent-danger, #dc322f) !important;
++    }
++}
++
++// ==========================================
++// 10. PREMIUM NATIVE BOOTSTRAP BADGE RESKIN
++// ==========================================
++
++.badge {
++    font-family: var(--font-code, monospace) !important;
++    font-size: 0.85em !important;
++    font-weight: 600 !important;
++    padding: 3px 8px !important;
++    border-radius: 4px !important;
++    white-space: nowrap !important;
++    display: inline-flex !important;
++    align-items: center !important;
++    justify-content: center !important;
++    border: 1px solid transparent !important;
++    
++    /* Default styled state */
++    &:not([class*="bg-"]):not([class*="is-"]) {
++        background-color: var(--badge-bg, rgba(147, 161, 161, 0.1)) !important;
++        color: var(--badge-color, #586e75) !important;
++        border-color: var(--badge-border, rgba(147, 161, 161, 0.2)) !important;
++    }
++
++    /* Fixed block variations */
++    &.is-block {
++        width: 18px !important;
++        height: 18px !important;
++        padding: 0 !important;
++        border-radius: 3px !important;
++    }
++
++    /* Info variations */
++    &.bg-info, &.is-info {
++        background-color: rgba(var(--sol-blue-rgb, 38, 139, 210), 0.1) !important;
++        color: var(--accent-info, #268bd2) !important;
++        border-color: rgba(var(--sol-blue-rgb, 38, 139, 210), 0.2) !important;
++    }
++
++    /* Success variations */
++    &.bg-success, &.is-success {
++        background-color: rgba(var(--sol-green-rgb, 133, 153, 0), 0.1) !important;
++        color: var(--accent-success, #859900) !important;
++        border-color: rgba(var(--sol-green-rgb, 133, 153, 0), 0.2) !important;
++    }
++
++    /* Warning variations */
++    &.bg-warning, &.is-warning {
++        background-color: rgba(var(--sol-orange-rgb, 203, 75, 22), 0.1) !important;
++        color: var(--accent-warning, #cb4b16) !important;
++        border-color: rgba(var(--sol-orange-rgb, 203, 75, 22), 0.2) !important;
++    }
++
++    /* Danger variations */
++    &.bg-danger, &.is-danger {
++        background-color: rgba(var(--sol-red-rgb, 220, 50, 47), 0.1) !important;
++        color: var(--accent-danger, #dc322f) !important;
++        border-color: rgba(var(--sol-red-rgb, 220, 50, 47), 0.2) !important;
++    }
++}
++
++// ==========================================
++// 11. COPY-TO-CLIPBOARD FIX
++// ==========================================
++
++// Hide Copy to Clipboard buttons on hidden cells or active OJS widgets
++.sourceCode.cell-code.hidden ~ .code-copy-button {
++    display: none !important;
++}
++
++.cell:has(.observablehq) .code-copy-button {
++    display: none !important;
+ }

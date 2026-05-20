@@ -21,3 +21,365 @@ export function renderGraph(container, graphData, is3D = false) {
   }
   return ForceGraph()(container).graphData(graphData);
 }
+
+// ==========================================
+// Solarized Palette (hardcoded for Canvas)
+// ==========================================
+const SOL = {
+  base03: "#002b36", base02: "#073642", base01: "#586e75",
+  base00: "#657b83", base0: "#839496", base1: "#93a1a1",
+  base2: "#eee8d5", base3: "#fdf6e3",
+  yellow: "#b58900", orange: "#cb4b16", red: "#dc322f",
+  magenta: "#d33682", violet: "#6c71c4", blue: "#268bd2",
+  cyan: "#2aa198", green: "#859900",
+};
+
+const WIRE_COLORS = [SOL.cyan, SOL.magenta, SOL.orange, SOL.violet, SOL.blue];
+
+/**
+ * ⚡ Cabling Exercise — thin force-graph 2D wrapper
+ *
+ * Renders a bipartite graph (left nodes ↔ right nodes) on a Canvas.
+ * Interaction (click-to-connect) and validation are handled by the caller (QMD).
+ *
+ * @param {HTMLElement} container - DOM element that will host the canvas
+ * @param {Object} opts
+ * @param {Array}  opts.leftItems  - [{id, label}]
+ * @param {Array}  opts.rightItems - [{id, label}]
+ * @param {number} [opts.width]    - Canvas width (default: container width)
+ * @param {number} [opts.height]   - Canvas height (auto-computed if omitted)
+ *
+ * @returns {{ graph, setLinks, setValidation, onNodeClick }}
+ */
+export function renderCablingGraph(container, {
+  leftItems = [],
+  rightItems = [],
+  width: userWidth,
+  height: userHeight,
+} = {}) {
+
+  // ── Layout ──────────────────────────────────────
+  const maxRows = Math.max(leftItems.length, rightItems.length);
+  const ROW_H = 64;
+  const PAD_Y = 40;
+  const W = userWidth || container.offsetWidth || 600;
+  const H = userHeight || (maxRows * ROW_H + PAD_Y * 2);
+  const LEFT_X = -W / 2 + 160;
+  const RIGHT_X = W / 2 - 160;
+
+  const posY = (i, total) => -((total - 1) * ROW_H) / 2 + i * ROW_H;
+
+  // ── Nodes ───────────────────────────────────────
+  const nodes = [
+    ...leftItems.map((it, i) => ({
+      id: `L_${it.id}`, label: it.label, group: "left", _srcId: it.id,
+      fx: LEFT_X, fy: posY(i, leftItems.length),
+    })),
+    ...rightItems.map((it, i) => ({
+      id: `R_${it.id}`, label: it.label, group: "right", _srcId: it.id,
+      fx: RIGHT_X, fy: posY(i, rightItems.length),
+    })),
+  ];
+
+  // ── Mutable state exposed to the caller ────────
+  let links = [];           // [{source, target, colorIndex}]
+  let validation = null;    // null | Map<linkKey, "correct"|"incorrect">
+  let hoverNode = null;
+  let activeLeft = null;    // node id of the left socket being wired
+  let _onNodeClick = null;
+  let dashOffset = 0;       // for animated dashes
+
+  // ── Force-graph instance ────────────────────────
+  const graph = ForceGraph()(container)
+    .width(W)
+    .height(H)
+    .graphData({ nodes, links })
+    .backgroundColor(SOL.base03)
+    // Disable all physics & user navigation — pure exercise layout
+    .cooldownTicks(0)
+    .enableZoomInteraction(false)
+    .enablePanInteraction(false)
+    .enableNodeDrag(false)
+    // ── Node painting ────────────────────────────
+    .nodeCanvasObject((node, ctx) => {
+      const isLeft = node.group === "left";
+      const isHover = hoverNode === node.id;
+      const isActive = activeLeft === node.id;
+      const x = node.x;
+      const y = node.y;
+
+      // Socket circle
+      const r = 11;
+      const socketX = isLeft ? x + 120 : x - 120;
+
+      // Glow on hover / active
+      if (isHover || isActive) {
+        ctx.save();
+        ctx.shadowColor = isActive ? SOL.yellow : SOL.cyan;
+        ctx.shadowBlur = isActive ? 18 : 12;
+        ctx.beginPath();
+        ctx.arc(socketX, y, r + 2, 0, Math.PI * 2);
+        ctx.fillStyle = "transparent";
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Background pill for the label
+      const labelW = 200;
+      const labelH = 38;
+      const pillX = isLeft ? x - 100 : x - 100;
+      ctx.fillStyle = SOL.base02;
+      ctx.strokeStyle = isHover ? `${SOL.blue}88` : `${SOL.base01}30`;
+      ctx.lineWidth = 1;
+      roundRect(ctx, pillX, y - labelH / 2, labelW, labelH, 8);
+      ctx.fill();
+      ctx.stroke();
+
+      // Left accent bar or right accent bar
+      ctx.fillStyle = isHover ? `${SOL.blue}88` : `${SOL.base01}60`;
+      if (isLeft) {
+        roundRect(ctx, pillX, y - labelH / 2, 4, labelH, [8, 0, 0, 8]);
+      } else {
+        roundRect(ctx, pillX + labelW - 4, y - labelH / 2, 4, labelH, [0, 8, 8, 0]);
+      }
+      ctx.fill();
+
+      // Label text
+      ctx.fillStyle = isLeft ? SOL.base0 : SOL.base1;
+      ctx.font = isLeft
+        ? `600 11px 'Recursive', sans-serif`
+        : `bold 11px 'Recursive', monospace`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      // Wrap text if needed
+      const maxTextW = labelW - 24;
+      const text = node.label;
+      wrapText(ctx, text, pillX + labelW / 2, y, maxTextW, 14);
+
+      // Socket circle
+      ctx.beginPath();
+      ctx.arc(socketX, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = "#02161b";
+      ctx.fill();
+      ctx.strokeStyle = isActive ? SOL.yellow : (isHover ? SOL.cyan : SOL.base01);
+      ctx.lineWidth = 3.5;
+      ctx.stroke();
+
+      // Socket inner dot
+      ctx.beginPath();
+      ctx.arc(socketX, y, 3, 0, Math.PI * 2);
+      ctx.fillStyle = isActive ? SOL.yellow : SOL.base01;
+      ctx.fill();
+
+      // Active pulsing glow
+      if (isActive) {
+        ctx.save();
+        ctx.shadowColor = SOL.yellow;
+        ctx.shadowBlur = 15 + Math.sin(Date.now() / 200) * 5;
+        ctx.beginPath();
+        ctx.arc(socketX, y, r + 1, 0, Math.PI * 2);
+        ctx.strokeStyle = SOL.yellow;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+      }
+    })
+    .nodePointerAreaPaint((node, color, ctx) => {
+      // Enlarged hit area covering both pill and socket
+      const isLeft = node.group === "left";
+      const socketX = isLeft ? node.x + 120 : node.x - 120;
+      const minX = Math.min(node.x - 100, socketX - 14);
+      const maxX = Math.max(node.x + 100, socketX + 14);
+      ctx.fillStyle = color;
+      ctx.fillRect(minX, node.y - 22, maxX - minX, 44);
+    })
+    // ── Link painting ─────────────────────────────
+    .linkCanvasObject((link, ctx) => {
+      const src = link.source;
+      const tgt = link.target;
+      if (!src || !tgt || typeof src.x === "undefined") return;
+
+      const srcIsLeft = src.group === "left";
+      const x1 = srcIsLeft ? src.x + 120 : src.x - 120;
+      const y1 = src.y;
+      const x2 = srcIsLeft ? tgt.x - 120 : tgt.x + 120;
+      const y2 = tgt.y;
+
+      const dx = Math.abs(x2 - x1) * 0.55;
+
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.bezierCurveTo(x1 + dx, y1, x2 - dx, y2, x2, y2);
+
+      const ci = link.colorIndex ?? 0;
+      const baseColor = WIRE_COLORS[ci % WIRE_COLORS.length];
+
+      // Determine state
+      let state = null;
+      if (validation) {
+        const key = `${src.id}→${tgt.id}`;
+        state = validation.get(key) || null;
+      }
+
+      ctx.save();
+      if (state === "correct") {
+        ctx.strokeStyle = SOL.green;
+        ctx.lineWidth = 5;
+        ctx.setLineDash([10, 6]);
+        ctx.lineDashOffset = -dashOffset;
+        ctx.shadowColor = SOL.green;
+        ctx.shadowBlur = 10;
+      } else if (state === "incorrect") {
+        const shake = Math.sin(Date.now() / 30) * 1.5;
+        ctx.translate(shake, shake * 0.3);
+        ctx.strokeStyle = SOL.red;
+        ctx.lineWidth = 5;
+        ctx.shadowColor = SOL.red;
+        ctx.shadowBlur = 10;
+      } else {
+        ctx.strokeStyle = baseColor;
+        ctx.lineWidth = 4;
+        ctx.shadowColor = baseColor;
+        ctx.shadowBlur = 6;
+      }
+      ctx.stroke();
+      ctx.restore();
+
+      // Draw socket fills on both ends for connected state
+      [{ x: x1, y: y1 }, { x: x2, y: y2 }].forEach(pt => {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = state === "correct" ? SOL.green
+          : state === "incorrect" ? SOL.red
+          : baseColor;
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.shadowBlur = 6;
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // Validated socket aura (pulsing glow ring)
+      if (state) {
+        const color = state === "correct" ? SOL.green : SOL.red;
+        const pulse = 8 + Math.sin(Date.now() / 300) * 6;
+        [{ x: x1, y: y1 }, { x: x2, y: y2 }].forEach(pt => {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, 11, 0, Math.PI * 2);
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2;
+          ctx.shadowColor = color;
+          ctx.shadowBlur = pulse;
+          ctx.stroke();
+          ctx.restore();
+        });
+      }
+
+      // Spark particles on incorrect connections
+      if (state === "incorrect") {
+        const t = Date.now() / 1000;
+        for (let i = 0; i < 6; i++) {
+          const angle = (t * 3 + i * 1.05) % (Math.PI * 2);
+          const dist = 15 + Math.sin(t * 5 + i) * 8;
+          [{ x: x1, y: y1 }, { x: x2, y: y2 }].forEach(pt => {
+            const sx = pt.x + Math.cos(angle) * dist;
+            const sy = pt.y + Math.sin(angle) * dist;
+            const sparkSize = 1.5 + Math.random() * 1.5;
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(sx, sy, sparkSize, 0, Math.PI * 2);
+            ctx.fillStyle = "#fff";
+            ctx.shadowColor = SOL.orange;
+            ctx.shadowBlur = 8;
+            ctx.fill();
+            ctx.restore();
+          });
+        }
+      }
+    })
+    .linkPointerAreaPaint(() => { /* no link interaction */ })
+    // ── Interaction ───────────────────────────────
+    .onNodeHover(node => {
+      hoverNode = node ? node.id : null;
+      container.style.cursor = node ? "pointer" : "default";
+    })
+    .onNodeClick(node => {
+      if (_onNodeClick) _onNodeClick(node);
+    });
+
+  // ── Animation loop for dash offset ─────────────
+  let animFrame;
+  const animate = () => {
+    dashOffset = (dashOffset + 0.8) % 32;
+    graph.nodeCanvasObject(graph.nodeCanvasObject()); // trigger re-render
+    animFrame = requestAnimationFrame(animate);
+  };
+  animate();
+
+  // ── Public API ──────────────────────────────────
+  return {
+    graph,
+
+    /** Replace the current set of links and re-render */
+    setLinks(newLinks) {
+      links = newLinks;
+      graph.graphData({ nodes, links });
+    },
+
+    /** Set validation results: Map<"L_x→R_y", "correct"|"incorrect"> or null */
+    setValidation(v) {
+      validation = v;
+    },
+
+    /** Set which left node is being actively wired */
+    setActiveLeft(nodeId) {
+      activeLeft = nodeId;
+    },
+
+    /** Register a click handler: fn(node) */
+    onNodeClick(fn) {
+      _onNodeClick = fn;
+    },
+
+    /** Cleanup */
+    destroy() {
+      cancelAnimationFrame(animFrame);
+      graph._destructor && graph._destructor();
+    },
+  };
+}
+
+// ── Canvas helpers ────────────────────────────────
+function roundRect(ctx, x, y, w, h, r) {
+  if (typeof r === "number") r = [r, r, r, r];
+  ctx.beginPath();
+  ctx.moveTo(x + r[0], y);
+  ctx.lineTo(x + w - r[1], y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r[1]);
+  ctx.lineTo(x + w, y + h - r[2]);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r[2], y + h);
+  ctx.lineTo(x + r[3], y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r[3]);
+  ctx.lineTo(x, y + r[0]);
+  ctx.quadraticCurveTo(x, y, x + r[0], y);
+  ctx.closePath();
+}
+
+function wrapText(ctx, text, x, y, maxW, lineH) {
+  const words = text.split(" ");
+  let line = "";
+  const lines = [];
+  for (const word of words) {
+    const test = line ? `${line} ${word}` : word;
+    if (ctx.measureText(test).width > maxW && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = test;
+    }
+  }
+  lines.push(line);
+  const startY = y - ((lines.length - 1) * lineH) / 2;
+  lines.forEach((l, i) => ctx.fillText(l, x, startY + i * lineH));
+}

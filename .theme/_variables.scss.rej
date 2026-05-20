@@ -1,0 +1,182 @@
+--- .theme/_variables.scss
++++ .theme/_variables.scss
+@@ -52,4 +52,179 @@ $info: $sol-blue !default;
+ $warning: $sol-yellow !default;
+ $danger: $sol-red !default;
+ $light: $sol-base2 !default;
+-$dark: $sol-base02 !default;+$dark: $sol-base02 !default;
++
++/*-- scss:rules --*/
++:root {
++    --sol-base03: #{$sol-base03};
++    --sol-base02: #{$sol-base02};
++    --sol-base01: #{$sol-base01};
++    --sol-base00: #{$sol-base00};
++    --sol-base0:  #{$sol-base0};
++    --sol-base1:  #{$sol-base1};
++    --sol-base2:  #{$sol-base2};
++    --sol-base3:  #{$sol-base3};
++    --sol-blue:   #{$sol-blue};
++    --sol-orange: #{$sol-orange};
++    --sol-red:    #{$sol-red};
++    --sol-magenta:#{$sol-magenta};
++    --sol-violet: #{$sol-violet};
++    --sol-cyan:   #{$sol-cyan};
++    --sol-green:  #{$sol-green};
++    --sol-yellow: #{$sol-yellow};
++
++    // RGB Components for transparency
++    --sol-base03-rgb: 0, 43, 54;
++    --sol-base02-rgb: 7, 54, 66;
++    --sol-base01-rgb: 88, 110, 117;
++    --sol-base00-rgb: 101, 123, 131;
++    --sol-base0-rgb:  131, 148, 150;
++    --sol-base1-rgb:  147, 161, 161;
++    --sol-base2-rgb:  238, 232, 213;
++    --sol-base3-rgb:  253, 246, 227;
++    --sol-blue-rgb:   38, 139, 210;
++    --sol-orange-rgb: 203, 75, 22;
++    --sol-red-rgb:    220, 50, 47;
++    --sol-magenta-rgb: 211, 54, 130;
++    --sol-violet-rgb: 108, 113, 196;
++    --sol-cyan-rgb:   42, 161, 152;
++    --sol-green-rgb:  133, 153, 0;
++    --sol-yellow-rgb: 181, 137, 0;
++
++    /* --- Semantic UI Colors --- */
++    --accent-primary: var(--sol-blue);
++    --accent-primary-rgb: var(--sol-blue-rgb);
++    --accent-success: var(--sol-green);
++    --accent-warning: var(--sol-yellow);
++    --accent-danger: var(--sol-red);
++    --accent-info: var(--sol-blue);
++    --accent-hover: var(--sol-orange);
++    
++    --body-bg: var(--sol-base3);
++    --body-color: var(--sol-base00);
++    
++    --card-bg: var(--sol-base3);
++    --card-border: rgba(var(--sol-base01-rgb), 0.12);
++    --card-shadow: 0 4px 12px rgba(var(--sol-base03-rgb), 0.03);
++    --card-shadow-hover: 0 8px 24px rgba(var(--sol-base03-rgb), 0.05);
++    --card-border-hover: rgba(var(--sol-base01-rgb), 0.4);
++    
++    --shadow-tiny: 0 -2px 4px rgba(var(--sol-base03-rgb), 0.01);
++    --shadow-small: 0 4px 8px rgba(var(--sol-base03-rgb), 0.05);
++    --shadow-medium: 0 -2px 10px rgba(var(--sol-base03-rgb), 0.05);
++    --canvas-shadow-inset: inset 0 2px 8px rgba(var(--sol-base03-rgb), 0.08);
++    
++    --card-header-bg: var(--sol-base2);
++    --card-header-border: rgba(var(--sol-base01-rgb), 0.08);
++    
++    --card-tab-active-bg: var(--sol-base3);
++    --card-tab-active-color: var(--sol-base01);
++    --card-tab-active-border: rgba(var(--sol-base01-rgb), 0.08);
++    --card-tab-inactive-color: var(--sol-base1);
++    --card-tab-hover-bg: rgba(var(--sol-base01-rgb), 0.03);
++    
++    --control-bg: var(--sol-base2);
++    --control-fg: var(--sol-base01);
++    --control-active-bg: var(--sol-base3);
++    
++    --input-bg: var(--sol-base3);
++    --input-border: var(--sol-base2);
++    --input-color: var(--sol-base00);
++    
++    --progressbar-bg: var(--sol-base2);
++    
++    --scrollbar-thumb: var(--sol-base1);
++    --scrollbar-thumb-hover: var(--sol-base01);
++
++    --badge-bg: rgba(var(--sol-base1-rgb), 0.1);
++    --badge-color: var(--sol-base01);
++    --badge-border: rgba(var(--sol-base1-rgb), 0.2);
++}
++
++/* Explicit Dark Theme Overrides */
++.dark {
++    --body-bg: var(--sol-base03);
++    --body-color: var(--sol-base1);
++    
++    --card-bg: var(--sol-base03);
++    --card-border: var(--sol-base02);
++    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
++    --card-shadow-hover: 0 12px 36px rgba(0, 0, 0, 0.22);
++    --card-border-hover: var(--sol-base01);
++    
++    --shadow-tiny: 0 -2px 4px rgba(0, 0, 0, 0.05);
++    --shadow-small: 0 4px 8px rgba(0, 0, 0, 0.2);
++    --shadow-medium: 0 -2px 10px rgba(0, 0, 0, 0.25);
++    --canvas-shadow-inset: inset 0 2px 8px rgba(0, 0, 0, 0.25);
++    
++    --card-header-bg: var(--sol-base02);
++    --card-header-border: rgba(147, 161, 161, 0.1);
++    
++    --card-tab-active-bg: var(--sol-base03);
++    --card-tab-active-color: var(--sol-base1);
++    --card-tab-active-border: rgba(147, 161, 161, 0.1);
++    --card-tab-inactive-color: var(--sol-base01);
++    --card-tab-hover-bg: rgba(147, 161, 161, 0.03);
++    
++    --control-bg: var(--sol-base02);
++    --control-fg: var(--sol-base0);
++    --control-active-bg: var(--sol-base03);
++    
++    --input-bg: var(--sol-base03);
++    --input-border: var(--sol-base02);
++    --input-color: var(--sol-base0);
++    
++    --progressbar-bg: var(--sol-base02);
++    
++    --scrollbar-thumb: var(--sol-base01);
++    --scrollbar-thumb-hover: var(--sol-base0);
++
++    --badge-bg: rgba(var(--sol-base01-rgb), 0.15);
++    --badge-color: var(--sol-base1);
++    --badge-border: rgba(var(--sol-base01-rgb), 0.25);
++}
++
++/* System-level Dark Preference Auto Overrides */
++@media (prefers-color-scheme: dark) {
++    :root:not(.light) {
++        --body-bg: var(--sol-base03);
++        --body-color: var(--sol-base1);
++        
++        --card-bg: var(--sol-base03);
++        --card-border: var(--sol-base02);
++        --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
++        --card-shadow-hover: 0 12px 36px rgba(0, 0, 0, 0.22);
++        --card-border-hover: var(--sol-base01);
++        
++        --shadow-tiny: 0 -2px 4px rgba(0, 0, 0, 0.05);
++        --shadow-small: 0 4px 8px rgba(0, 0, 0, 0.2);
++        --shadow-medium: 0 -2px 10px rgba(0, 0, 0, 0.25);
++        --canvas-shadow-inset: inset 0 2px 8px rgba(0, 0, 0, 0.25);
++        
++        --card-header-bg: var(--sol-base02);
++        --card-header-border: rgba(147, 161, 161, 0.1);
++        
++        --card-tab-active-bg: var(--sol-base03);
++        --card-tab-active-color: var(--sol-base1);
++        --card-tab-active-border: rgba(147, 161, 161, 0.1);
++        --card-tab-inactive-color: var(--sol-base01);
++        --card-tab-hover-bg: rgba(147, 161, 161, 0.03);
++        
++        --control-bg: var(--sol-base02);
++        --control-fg: var(--sol-base0);
++        --control-active-bg: var(--sol-base03);
++        
++        --input-bg: var(--sol-base03);
++        --input-border: var(--sol-base02);
++        --input-color: var(--sol-base0);
++        
++        --progressbar-bg: var(--sol-base02);
++        
++        --scrollbar-thumb: var(--sol-base01);
++        --scrollbar-thumb-hover: var(--sol-base0);
++
++        --badge-bg: rgba(var(--sol-base01-rgb), 0.15);
++        --badge-color: var(--sol-base1);
++        --badge-border: rgba(var(--sol-base01-rgb), 0.25);
++    }
++}
