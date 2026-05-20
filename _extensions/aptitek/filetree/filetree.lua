@@ -144,7 +144,7 @@ local function get_href(path, filename)
 end
 
 local function split_name_desc(text)
-    local name, desc = text:match("^([^%(]+)(.*)$")
+    local name, desc = text:match("^([^([^]+)(.*)$")
     if not name then
         name = text
         desc = ""
@@ -158,26 +158,26 @@ end
 local function format_item_html(name, desc, icon_class, is_link, url, frame_name, container_id)
     local desc_html = ""
     if desc ~= "" then
-        desc_html = string.format(' <span class="filetree-comment">%s</span>', desc)
+        desc_html = string.format(' <span class="filetree-comment text-muted small ms-1">%s</span>', desc)
     end
     
     local name_html = string.format('<span class="filetree-name">%s</span>', name)
     
     if is_link then
         return string.format(
-            '<li class="file"><a href="#" class="filetree-link" data-url="%s" data-frame="%s" data-container="%s"><i class="bi %s file-icon"></i> %s%s</a></li>',
+            '<li class="file"><a href="#" class="filetree-link d-flex align-items-center gap-2 py-1 text-decoration-none text-body rounded px-2" data-url="%s" data-frame="%s" data-container="%s"><i class="bi %s text-info filetree-file-icon"></i> %s%s</a></li>',
             url, frame_name, container_id, icon_class, name_html, desc_html
         )
     else
         local li_class = "file-leaf"
-        local icon_color_class = "file-icon"
+        local icon_color_class = "text-secondary"
         -- If it represents a directory
         if name:find("/$") then
             li_class = "folder-leaf"
-            icon_color_class = "folder-icon"
+            icon_color_class = "text-warning"
         end
         return string.format(
-            '<li class="%s"><span><i class="bi %s %s"></i> %s%s</span></li>',
+            '<li class="%s"><span class="d-flex align-items-center gap-2 py-1 text-body opacity-75 px-2"><i class="bi %s %s"></i> %s%s</span></li>',
             li_class, icon_class, icon_color_class, name_html, desc_html
         )
     end
@@ -214,13 +214,13 @@ local function render_item(item, frame_name, container_id)
         local f_name, f_desc = split_name_desc(folder_name)
         local desc_html = ""
         if f_desc ~= "" then
-            desc_html = string.format(' <span class="filetree-comment">%s</span>', f_desc)
+            desc_html = string.format(' <span class="filetree-comment text-muted small ms-1">%s</span>', f_desc)
         end
-        local name_html = string.format('<span class="filetree-name">%s</span>', f_name)
+        local name_html = string.format('<span class="filetree-name fw-semibold">%s</span>', f_name)
 
         content = content ..
-            '<li class="folder"><details open><summary><i class="bi bi-chevron-right folder-arrow"></i><i class="bi bi-folder-fill folder-icon"></i> '
-            .. name_html .. desc_html .. '</summary><ul>'
+            '<li class="folder mb-1"><details open><summary class="d-flex align-items-center gap-2 py-1 text-body rounded px-2" style="cursor: pointer; list-style: none;"><i class="bi bi-chevron-right folder-arrow small text-muted"></i><i class="bi bi-folder-fill text-warning"></i> '
+            .. name_html .. desc_html .. '</summary><ul class="list-unstyled ps-3 ms-2 border-start">'
 
         if sublist then
             for _, child_item in ipairs(sublist.content) do
@@ -341,7 +341,7 @@ return {
                     web_zip_url = zip_link
                 end
 
-                zip_html = string.format('<a href="%s" class="ui-ide-download" title="Download %s"><i class="bi bi-file-earmark-zip-fill"></i> ZIP</a>'
+                zip_html = string.format('<a href="%s" class="ui-ide-download btn btn-sm btn-outline-primary fw-bold py-0 px-2 small" title="Download %s"><i class="bi bi-file-earmark-zip-fill"></i> ZIP</a>'
                     , web_zip_url, zip_name)
 
                 -- Check if zip exists on disk in site output directory
@@ -385,18 +385,18 @@ return {
             end
 
             local html = string.format([[
-<div class="ui-ide" id="%s">
-  <div class="ui-ide-sidebar">
-    <div class="ui-ide-header">
-        <span class="ui-ide-title">%s</span>
+<div class="ui-ide d-flex border rounded overflow-hidden mb-4" id="%s">
+  <div class="ui-ide-sidebar p-3">
+    <div class="ui-ide-header d-flex justify-content-between align-items-center pb-2 mb-3 border-bottom">
+        <span class="ui-ide-title fw-bold text-uppercase small text-muted">%s</span>
         %s
     </div>
-    <ul class="ui-ide-list">
+    <ul class="ui-ide-list list-unstyled m-0 p-0">
         %s
     </ul>
   </div>
-  <div class="ui-ide-main">
-    <iframe name="%s" src="about:blank" onload="this.style.opacity=1"></iframe>
+  <div class="ui-ide-main d-none flex-column flex-grow-1">
+    <iframe name="%s" src="about:blank" class="w-100 h-100 border-0" onload="this.style.opacity=1"></iframe>
   </div>
   <script>
     (function() {
@@ -416,6 +416,10 @@ return {
                 
                 var container = document.getElementById(containerId);
                 if (container) container.classList.add('is-active');
+                
+                var actives = container.querySelectorAll('.filetree-link.is-active');
+                actives.forEach(function(el) { el.classList.remove('is-active'); });
+                this.classList.add('is-active');
                 
                 var iframe = document.querySelector('iframe[name="' + frameName + '"]');
                 if (iframe) {
