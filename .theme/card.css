@@ -295,3 +295,219 @@
         typing 2.5s steps(40, end) forwards,
         caret 0.75s step-end infinite !important;
 }
+
+/* ==========================================================================
+   PREMIUM INTERACTIVE EDITORS (Pyodide / Quarto-Live)
+   ========================================================================== */
+
+/* Main Window Container */
+.card.exercise-editor {
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    margin-bottom: 2rem !important;
+    position: relative !important;
+    background-color: var(--card-window-bg, var(--card-bg, #fdf6e3)) !important;
+    border: 1px solid var(--card-window-border, var(--card-border, rgba(88, 110, 117, 0.12))) !important;
+    box-shadow: var(--card-window-shadow, var(--card-shadow, 0 4px 12px rgba(0, 43, 54, 0.03))) !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    
+    /* Inject Custom Solarized CSS Variables to override Quarto-Live defaults */
+    --exercise-cap-bg: var(--card-window-header-bg, var(--card-header-bg, #eee8d5)) !important;
+    --exercise-main-bg: var(--card-window-bg, var(--card-bg, #fdf6e3)) !important;
+    --exercise-code-block-bg: var(--card-window-bg, var(--card-bg, #fdf6e3)) !important;
+    --exercise-gray: var(--card-window-border, var(--card-border, rgba(88, 110, 117, 0.12))) !important;
+}
+
+.card.exercise-editor:hover {
+    box-shadow: var(--card-window-shadow-hover, var(--card-shadow-hover, 0 8px 24px rgba(0, 43, 54, 0.05))) !important;
+    border-color: var(--card-window-border-hover, var(--card-border-hover, rgba(147, 161, 161, 0.4))) !important;
+}
+
+/* Header Bar */
+.card.exercise-editor .card-header {
+    display: flex !important;
+    align-items: center !important;
+    height: 38px !important;
+    padding: 0 16px !important;
+    user-select: none !important;
+    background-color: var(--card-window-header-bg, var(--card-header-bg, #eee8d5)) !important;
+    border-bottom: 1px solid var(--card-window-header-border, var(--card-header-border, rgba(88, 110, 117, 0.08))) !important;
+    position: relative !important;
+    justify-content: flex-start !important;
+}
+
+.card.exercise-editor .card-header::before {
+    content: "" !important;
+    display: inline-block !important;
+    flex-shrink: 0 !important;
+    width: 8px !important;
+    height: 8px !important;
+    background-color: #dc322f !important; /* red controls */
+    border-radius: 50% !important;
+    box-shadow: 14px 0 0 #b58900, 28px 0 0 #859900 !important; /* yellow, green controls */
+    margin-right: 42px !important;
+    opacity: 0.85 !important;
+}
+
+/* Hide duplicate centered title that Quarto-Live generates */
+.card.exercise-editor .card-header > .d-flex > div:not(.btn-group):not(.exercise-editor-eval-indicator) {
+    display: none !important;
+}
+
+/* Push the buttons/controls container to the far right using margin auto on the next sibling of tabs */
+.card.exercise-editor .card-header .ui-code-tabs + .d-flex {
+    margin-left: auto !important;
+}
+
+.card.exercise-editor .card-header .exercise-loading-details {
+    font-family: var(--font-code, monospace) !important;
+    font-size: 0.8rem !important;
+    font-weight: 500 !important;
+    color: var(--accent-base1, #93a1a1) !important;
+}
+
+.card.exercise-editor .card-header .ui-code-tabs {
+    font-size: 0.8rem !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    margin-left: 10px !important;
+    margin-bottom: -1px !important; /* Align tab border with header bottom */
+}
+
+.card.exercise-editor .card-header .btn-exercise-editor {
+    font-size: 0.78rem !important; /* Restore font size */
+}
+
+.card.exercise-editor .card-header .btn-exercise-editor:first-of-type {
+    margin-left: auto !important;
+}
+
+/* CodeMirror Editor Area */
+.card.exercise-editor .cm-editor {
+    background-color: var(--card-window-bg, var(--card-bg, #fdf6e3)) !important;
+    color: var(--card-window-tab-active-color, var(--card-tab-active-color, #586e75)) !important;
+    border-radius: 0 !important;
+    border: none !important;
+    font-family: var(--font-code, monospace) !important;
+    font-variation-settings: 'MONO' 1, 'CASL' 0, 'wght' 450 !important;
+    font-size: 0.88rem !important;
+}
+
+.card.exercise-editor .cm-editor .cm-scroller {
+    line-height: 1.55 !important;
+    padding: 8px 0 !important;
+}
+
+/* Line number gutters */
+.card.exercise-editor .cm-editor .cm-gutters {
+    background-color: var(--card-window-header-bg, var(--card-header-bg, #eee8d5)) !important;
+    border-right: 1px solid var(--card-window-header-border, var(--card-header-border, rgba(88, 110, 117, 0.08))) !important;
+    color: var(--accent-base1, #93a1a1) !important;
+    font-family: var(--font-code, monospace) !important;
+    font-weight: 400 !important;
+}
+
+/* Active Line */
+.card.exercise-editor .cm-editor .cm-activeLine {
+    background-color: rgba(38, 139, 210, 0.04) !important;
+}
+
+.card.exercise-editor .cm-editor .cm-activeLineGutter {
+    background-color: rgba(38, 139, 210, 0.08) !important;
+    color: var(--accent-primary, #268bd2) !important;
+    font-weight: 700 !important;
+}
+
+/* Selection */
+.card.exercise-editor .cm-editor .cm-selectionBackground, 
+.card.exercise-editor .cm-editor .cm-content ::selection {
+    background-color: rgba(38, 139, 210, 0.1) !important;
+}
+
+/* Caret cursor */
+.card.exercise-editor .cm-editor .cm-cursor {
+    border-left-color: var(--accent-primary, #268bd2) !important;
+}
+
+/* Interactive Action Buttons */
+.card.exercise-editor .btn-exercise-editor {
+    font-family: var(--font-base, sans-serif) !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    border-radius: 6px !important;
+    padding: 4px 10px !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    cursor: pointer !important;
+    margin-right: 6px !important;
+    border: 1px solid transparent !important;
+}
+
+/* Primary Action Button (Run Code - Green) */
+.card.exercise-editor .btn-exercise-editor.btn-primary {
+    background-color: var(--accent-success, #859900) !important;
+    border-color: var(--accent-success, #859900) !important;
+    color: var(--card-window-bg, var(--card-bg, #fdf6e3)) !important;
+}
+
+.card.exercise-editor .btn-exercise-editor.btn-primary:hover {
+    background-color: var(--accent-success, #859900) !important;
+    filter: brightness(90%) !important;
+    box-shadow: 0 4px 12px rgba(133, 153, 0, 0.25) !important;
+}
+
+.card.exercise-editor .btn-exercise-editor.btn-primary:disabled, 
+.card.exercise-editor .btn-exercise-editor.btn-primary.disabled {
+    background-color: rgba(133, 153, 0, 0.5) !important;
+    border-color: transparent !important;
+    opacity: 0.7 !important;
+    cursor: not-allowed !important;
+}
+
+/* Start Over Action Button (Red) */
+.card.exercise-editor .btn-exercise-editor.btn-outline-dark {
+    background-color: var(--accent-danger, #dc322f) !important;
+    border-color: var(--accent-danger, #dc322f) !important;
+    color: var(--card-window-bg, var(--card-bg, #fdf6e3)) !important;
+}
+
+.card.exercise-editor .btn-exercise-editor.btn-outline-dark:hover {
+    background-color: var(--accent-danger, #dc322f) !important;
+    filter: brightness(90%) !important;
+    box-shadow: 0 4px 12px rgba(220, 50, 47, 0.25) !important;
+}
+
+/* Output and Console Panel */
+.card.exercise-editor .exercise-cell-output {
+    border-top: 1px solid var(--card-window-header-border, var(--card-header-border, rgba(88, 110, 117, 0.08))) !important;
+    background-color: var(--card-window-header-bg, var(--card-header-bg, #eee8d5)) !important;
+    padding: 12px 16px !important;
+    border-radius: 0 0 8px 8px !important;
+}
+
+.card.exercise-editor .exercise-cell-output pre {
+    margin: 0 !important;
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.card.exercise-editor .exercise-cell-output pre code {
+    font-family: var(--font-code, monospace) !important;
+    font-size: 0.85rem !important;
+    color: var(--card-window-tab-active-color, var(--card-tab-active-color, #586e75)) !important;
+    line-height: 1.5 !important;
+}
+
+/* Global Wasm Loading indicator styling */
+#exercise-loading-indicator {
+    border: 1px solid var(--card-window-header-border, var(--card-header-border, rgba(88, 110, 117, 0.08))) !important;
+    background-color: var(--card-window-header-bg, var(--card-header-bg, #eee8d5)) !important;
+    color: var(--card-window-tab-active-color, var(--card-tab-active-color, #586e75)) !important;
+    font-family: var(--font-code, monospace) !important;
+    font-size: 0.8rem !important;
+    border-top-left-radius: 8px !important;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05) !important;
+    padding: 6px 14px !important;
+}
+
