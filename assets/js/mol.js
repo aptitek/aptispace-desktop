@@ -7,51 +7,25 @@ import { theme, utils } from "./core.js";
  * 🎛️ Terminal Console
  */
 export const terminalConsole = ({ header = "Processus", logs = [] }) => {
-  if (!logs || logs.length === 0) {
-    return `
-      <div class="ui-terminal">
-        <div class="ui-terminal-header">
-          <span class="ui-terminal-title">${header}</span>
-        </div>
-        <div class="ui-terminal-body">
-          <div class="ui-terminal-line is-muted">
-            <span class="prefix">(></span> 
-            <span class="message">Aucune donnée à afficher</span>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
   const logContent = logs.map((log, index) => {
     const delay = (index * 0.2).toFixed(2);
-    let html;
-    
-    // Si c'est déjà une ligne formatée (contient la classe)
-    if (typeof log === 'string' && log.includes('ui-terminal-line')) {
-      html = log;
-    } else {
-      const logObj = typeof log === 'string' ? { message: log } : log;
-      const { message, prefix = "(>", type = "info" } = logObj;
-      html = `
-        <div class="ui-terminal-line is-${type}">
-          <span class="prefix">${prefix}</span> 
-          <span class="message">${message}</span>
-        </div>
-      `;
+    let message = "";
+    let type = "info";
+    if (typeof log === 'string') {
+      message = log;
+    } else if (log) {
+      message = log.message || "";
+      type = log.type || "info";
     }
-    
-    // Injecter le délai dans le style (toujours nécessaire pour l'effet séquentiel)
-    return html.replace('style="', `style="animation-delay: ${delay}s; `);
+    const textClass = type === "danger" ? "text-danger" : (type === "warning" ? "text-warning" : (type === "muted" ? "text-muted" : "text-success"));
+    return `<div class="${textClass} reveal-lines" style="animation-delay: ${delay}s; font-family: var(--font-code, monospace); margin-bottom: 4px;">&gt; ${message}</div>`;
   }).join('');
 
   return `
-    <div class="ui-terminal">
-      <div class="ui-terminal-header">
-        <span class="ui-terminal-title">${header}</span>
-      </div>
-      <div class="ui-terminal-body">
-        ${logContent}
+    <div class="card card-window" style="border: 1px solid var(--sol-base1); background: var(--sol-base3);">
+      <div class="card-header card-window-header">${header}</div>
+      <div class="card-body" style="background: var(--sol-base2); padding: 15px; min-height: 100px;">
+        ${logContent || '<div class="text-muted" style="font-family: var(--font-code, monospace);">&gt; Aucune donnée</div>'}
       </div>
     </div>
   `;

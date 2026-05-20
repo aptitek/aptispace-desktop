@@ -10,15 +10,10 @@ import * as mol from "./mol.js";
 export const dataframeInspector = ({ data = [], title = "Aperçu du Dataset", maxRows = 5 }) => {
   if (!data || data.length === 0) {
     return `
-      <div class="ui-terminal">
-        <div class="ui-terminal-header">
-          <span class="ui-terminal-title">${title}</span>
-        </div>
-        <div class="ui-terminal-body">
-          <div class="ui-terminal-line is-info">
-            <span class="prefix">(></span> 
-            <span class="message">Dataset vide.</span>
-          </div>
+      <div class="card card-window" style="border: 1px solid var(--sol-base1); background: var(--sol-base3);">
+        <div class="card-header card-window-header">${title}</div>
+        <div class="card-body" style="background: var(--sol-base2); padding: 15px; min-height: 100px;">
+          <div class="text-muted" style="font-family: var(--font-code, monospace);">&gt; Dataset vide.</div>
         </div>
       </div>
     `;
@@ -195,10 +190,7 @@ export const plotlyWrapper = ({ data, layout = {}, config = {}, title = "Visuali
     } else {
       plotNode.innerHTML = `
         <div style="padding: 20px;">
-          <div class="ui-terminal-line is-danger">
-            <span class="prefix">(></span> 
-            <span class="message">Erreur: Plotly n'est pas chargé sur cette page.</span>
-          </div>
+          <div class="text-danger" style="font-family: var(--font-code, monospace);">&gt; Erreur: Plotly n'est pas chargé sur cette page.</div>
         </div>
       `;
     }

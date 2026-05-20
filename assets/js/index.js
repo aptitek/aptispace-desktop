@@ -36,23 +36,16 @@ export const ui = {
     return `<div class="badge ${colorClass} is-block"></div>`;
   },
   terminalWindow: ({ header = "Console", content = "" }) => `
-    <div class="ui-terminal">
-      <div class="ui-terminal-header">
-        <span class="ui-terminal-title">${header}</span>
-      </div>
-      <div class="ui-terminal-body">
+    <div class="card card-window" style="border: 1px solid var(--sol-base1); background: var(--sol-base3);">
+      <div class="card-header card-window-header">${header}</div>
+      <div class="card-body" style="background: var(--sol-base2); padding: 15px; min-height: 100px;">
         ${content}
       </div>
     </div>
   `,
-  logLine: ({ message, prefix = "(>", type = "info" }) => {
-    const colorClass = `is-${type}`;
-    return `
-      <div class="ui-terminal-line ${colorClass}">
-        <span class="prefix">${prefix}</span> 
-        <span class="message">${message}</span>
-      </div>
-    `;
+  logLine: ({ message, prefix = ">", type = "info" }) => {
+    const textClass = type === "danger" ? "text-danger" : (type === "warning" ? "text-warning" : (type === "muted" ? "text-muted" : "text-success"));
+    return `<div class="${textClass}" style="font-family: var(--font-code, monospace); margin-bottom: 4px;">${prefix} ${message}</div>`;
   },
   button: ({ label }) => `
     <button class="btn btn-warning">${label}</button>
