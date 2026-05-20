@@ -4,6 +4,7 @@
 import { theme, utils } from "./core.js";
 import * as org from "./org.js";
 import * as plots from "./plots.js";
+import * as networks from "./networks.js";
 
 export { theme };
 
@@ -268,10 +269,12 @@ export const ui = {
 
   org,
   plots,
+  networks,
   
   // Alias directs à la racine
   ...org,
   ...plots,
+  ...networks,
   
   // Rétrocompatibilité avec ui.atom.* et ui.mol.*
   get atom() { return ui; },
