@@ -445,6 +445,7 @@ export class CablingManager {
     this.validated    = false;
     this.jsp          = null; // jsPlumb instance
     this._connMap     = new Map(); // srcId → jsPlumb Connection object
+    this._sparks      = [];   // spark DOM elements for incorrect connections
 
     if (this.container) {
       this._init();
@@ -716,7 +717,31 @@ export class CablingManager {
     }
   }
 
-  // ── API publique (appelée depuis le QMD) ──────────────────────────────────
+  // ── Spark particles ────────────────────────────────────────
+
+  _addSparks(pillEl, side) {
+    const containerRect = this.container.getBoundingClientRect();
+    const pillRect      = pillEl.getBoundingClientRect();
+    // Socket center relative to the cabling container
+    const x = side === "right"
+      ? pillRect.right  - containerRect.left
+      : pillRect.left   - containerRect.left;
+    const y = pillRect.top + pillRect.height / 2 - containerRect.top;
+
+    const COUNT = 6;
+    for (let i = 0; i < COUNT; i++) {
+      const spark = document.createElement("span");
+      spark.className = "cabling-spark";
+      spark.style.left  = `${x}px`;
+      spark.style.top   = `${y}px`;
+      spark.style.setProperty("--angle", `${i * (360 / COUNT)}deg`);
+      spark.style.animationDelay = `${(i * 0.1) % 0.6}s`;
+      this.container.appendChild(spark);
+      this._sparks.push(spark);
+    }
+  }
+
+  // ── API publique ──────────────────────────────────────────────
 
   validate() {
     if (Object.keys(this.connections).length < this.leftItems.length) {
@@ -732,6 +757,14 @@ export class CablingManager {
       const isCorrect = item && rid === item.match;
       conn.removeClass("conn-active");
       conn.addClass(isCorrect ? "conn-correct" : "conn-incorrect");
+
+      if (!isCorrect) {
+        // Ajouter des étincelles aux deux extrémités de la connexion incorrecte
+        const leftEl  = this.container.querySelector(`[data-src-id="${lid}"][data-group="left"]`);
+        const rightEl = this.container.querySelector(`[data-src-id="${rid}"][data-group="right"]`);
+        if (leftEl)  this._addSparks(leftEl,  "right");
+        if (rightEl) this._addSparks(rightEl, "left");
+      }
     }
 
     // Force le re-rendu SVG immédiat (sans nécessiter un hover)
@@ -758,6 +791,10 @@ export class CablingManager {
       });
       this.jsp.deleteAllConnections();
     }
+
+    // Supprimer les étincelles
+    this._sparks.forEach(s => s.remove());
+    this._sparks = [];
 
     // Réactiver les pills
     this.container.querySelectorAll(".cabling-pill").forEach(el => {

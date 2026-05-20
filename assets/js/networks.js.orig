@@ -549,8 +549,6 @@ export class CablingManager {
       const stroke = colors[ci % colors.length];
       connection.setPaintStyle({ stroke, strokeWidth: 3 });
       connection.setHoverPaintStyle({ stroke: "#b58900", strokeWidth: 4 });
-      // Classe pour l'animation de flux CSS
-      connection.addClass("conn-active");
 
       this._clearActive();
       this.onStateUpdate(this.getState());
@@ -756,7 +754,7 @@ export class CablingManager {
     if (this.jsp) {
       // Supprimer les classes de validation avant de supprimer les connexions
       this.jsp.getConnections().forEach(c => {
-        c.removeClass("conn-active conn-correct conn-incorrect");
+        c.removeClass("conn-correct conn-incorrect");
       });
       this.jsp.deleteAllConnections();
     }

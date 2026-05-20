@@ -209,6 +209,38 @@ import { CablingManager } from "./assets/js/networks.js"
   box-shadow: 0 0 0 3px rgba(181, 137, 0, 0.35) !important;
   color: #b58900 !important;
 }
+
+/* ── Spark particles (incorrect connections) ── */
+.cabling-spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  pointer-events: none;
+  transform-origin: center center;
+  animation: spark-fly 0.55s ease-out infinite;
+  z-index: 10;
+}
+
+@keyframes spark-fly {
+  0% {
+    transform: rotate(var(--angle)) translateX(0px) scale(1.2);
+    background: #fff;
+    box-shadow: 0 0 5px #fff, 0 0 8px #ff4444;
+    opacity: 1;
+  }
+  50% {
+    background: #ff6600;
+    box-shadow: 0 0 4px #ff6600;
+    opacity: 0.8;
+  }
+  100% {
+    transform: rotate(var(--angle)) translateX(18px) scale(0);
+    background: #dc322f;
+    box-shadow: 0 0 2px #dc322f;
+    opacity: 0;
+  }
+}
 </style>
 ```
 
