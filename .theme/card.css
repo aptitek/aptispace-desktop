@@ -36,6 +36,23 @@
 
 /* --- EXPLICIT DARK THEME & AUTO SYSTEM PREFERENCES --- */
 .ui-window.dark,
+.dark .ui-window {
+    --ui-window-bg: var(--sol-base03, #002b36);
+    --ui-window-border: var(--sol-base02, #073642);
+    --ui-window-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    --ui-window-shadow-hover: 0 12px 36px rgba(0, 0, 0, 0.22);
+    --ui-window-border-hover: var(--sol-base01, #586e75);
+    
+    --ui-window-header-bg: var(--sol-base02, #073642);
+    --ui-window-header-border: rgba(147, 161, 161, 0.1);
+    
+    --ui-window-tab-active-bg: var(--sol-base03, #002b36);
+    --ui-window-tab-active-color: var(--sol-base1, #93a1a1);
+    --ui-window-tab-active-border: rgba(147, 161, 161, 0.1);
+    --ui-window-tab-inactive-color: var(--sol-base01, #586e75);
+    --ui-window-tab-hover-bg: rgba(147, 161, 161, 0.03);
+}
+
 @media (prefers-color-scheme: dark) {
     .ui-window:not(.light) {
         --ui-window-bg: var(--sol-base03, #002b36);
