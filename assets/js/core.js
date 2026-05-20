@@ -105,15 +105,9 @@ export const utils = {
   // Génère un ID unique (utile si tu dois lier un label HTML à un input généré par JS)
   generateId: () => 'aptitek_' + Math.random().toString(36).substr(2, 9),
   
-  // Formate les nombres proprement pour éviter les floats infinis (ex: 0.3000000004)
-  formatNumber: (num, decimals = 3) => {
-    if (typeof num !== 'number') return num;
-    return Number.isInteger(num) ? num : Number(num).toFixed(decimals);
-  },
+  // Formate les nombres proprement avec la méthode standard toLocaleString
+  formatNumber: (num, decimals = 3) => typeof num === 'number' ? num.toLocaleString(undefined, { maximumFractionDigits: decimals }) : num,
 
-  // Tronque une chaîne de caractères trop longue (utile pour les aperçus de NLP)
-  truncateText: (str, maxLength = 50) => {
-    if (typeof str !== 'string') return str;
-    return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
-  }
+  // Tronque une chaîne avec la méthode standard slice
+  truncateText: (str, maxLength = 50) => typeof str === 'string' && str.length > maxLength ? str.slice(0, maxLength) + "..." : str
 };
