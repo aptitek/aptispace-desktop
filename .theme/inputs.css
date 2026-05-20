@@ -154,7 +154,6 @@ label,
     max-width: none !important;
 }
 
-/* --- Numerical Output Display --- */
 output {
     font-family: var(--font-code, monospace) !important;
     font-size: 0.85em !important;
@@ -163,4 +162,102 @@ output {
     margin-right: 15px !important;
     flex: 0 0 auto !important;
 }
+
+/* --- Generic Premium Buttons (.btn) --- */
+.btn:not(.btn-group *) {
+    border-radius: 20px !important;
+    font-weight: 700 !important;
+    padding: 8px 20px !important;
+    font-size: 0.9em !important;
+    letter-spacing: 0.5px !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: none !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    
+    &:hover {
+        transform: translateY(-2px) !important;
+        filter: brightness(1.1) !important;
+    }
+    
+    &:active {
+        transform: translateY(1px) !important;
+    }
+    
+    /* Variant overrides */
+    &.btn-primary {
+        background-color: var(--accent-primary, #268bd2) !important;
+        color: var(--sol-base3, #fdf6e7) !important;
+        box-shadow: 0 4px 12px rgba(var(--sol-blue-rgb, 38, 139, 210), 0.25) !important;
+        
+        &:hover {
+            box-shadow: 0 6px 16px rgba(var(--sol-blue-rgb, 38, 139, 210), 0.4) !important;
+        }
+    }
+    
+    &.btn-success {
+        background-color: var(--accent-success, #859900) !important;
+        color: var(--sol-base3, #fdf6e7) !important;
+        box-shadow: 0 4px 12px rgba(var(--sol-green-rgb, 133, 153, 0), 0.25) !important;
+        
+        &:hover {
+            box-shadow: 0 6px 16px rgba(var(--sol-green-rgb, 133, 153, 0), 0.4) !important;
+        }
+    }
+    
+    &.btn-info {
+        background-color: var(--accent-info, #268bd2) !important;
+        color: var(--sol-base3, #fdf6e7) !important;
+        box-shadow: 0 4px 12px rgba(var(--sol-blue-rgb, 38, 139, 210), 0.2) !important;
+        
+        &:hover {
+            box-shadow: 0 6px 16px rgba(var(--sol-blue-rgb, 38, 139, 210), 0.35) !important;
+        }
+    }
+    
+    &.btn-warning {
+        background-color: var(--accent-warning, #cb4b16) !important;
+        color: var(--sol-base3, #fdf6e7) !important;
+        box-shadow: 0 4px 12px rgba(var(--sol-orange-rgb, 203, 75, 22), 0.25) !important;
+        
+        &:hover {
+            box-shadow: 0 6px 16px rgba(var(--sol-orange-rgb, 203, 75, 22), 0.4) !important;
+        }
+    }
+    
+    &.btn-danger {
+        background-color: var(--accent-danger, #dc322f) !important;
+        color: var(--sol-base3, #fdf6e7) !important;
+        box-shadow: 0 4px 12px rgba(var(--sol-red-rgb, 220, 50, 47), 0.25) !important;
+        
+        &:hover {
+            box-shadow: 0 6px 16px rgba(var(--sol-red-rgb, 220, 50, 47), 0.4) !important;
+        }
+    }
+    
+    &.btn-light {
+        background-color: var(--sol-base2, #eee8d5) !important;
+        color: var(--sol-base01, #586e75) !important;
+        box-shadow: 0 4px 12px rgba(var(--sol-base01-rgb, 88, 110, 117), 0.08) !important;
+        
+        &:hover {
+            background-color: var(--sol-base3, #fdf6e7) !important;
+            box-shadow: 0 6px 16px rgba(var(--sol-base01-rgb, 88, 110, 117), 0.15) !important;
+        }
+    }
+    
+    &.btn-secondary {
+        background-color: var(--sol-base1, #93a1a1) !important;
+        color: var(--sol-base3, #fdf6e7) !important;
+        box-shadow: 0 4px 12px rgba(var(--sol-base1-rgb, 147, 161, 161), 0.1) !important;
+        
+        &:hover {
+            box-shadow: 0 6px 16px rgba(var(--sol-base1-rgb, 147, 161, 161), 0.25) !important;
+        }
+    }
+}
+
 
