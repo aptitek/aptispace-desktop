@@ -780,16 +780,41 @@ export class CablingManager {
 
   reset() {
     this.validated  = false;
-    this.connections = {};
-    this._connMap.clear();
     this._clearActive();
 
     if (this.jsp) {
-      // Supprimer les classes de validation avant de supprimer les connexions
-      this.jsp.getConnections().forEach(c => {
+      this._connMap.forEach(c => {
+        c.removeClass("conn-correct conn-incorrect");
+        try { this.jsp.deleteConnection(c); } catch {}
+      });
+    }
+
+    this.connections = {};
+    this._connMap.clear();
+
+    // Supprimer les étincelles
+    this._sparks.forEach(s => s.remove());
+    this._sparks = [];
+
+    // Réactiver les pills
+    this.container.querySelectorAll(".cabling-pill").forEach(el => {
+      el.style.cursor      = "pointer";
+      el.style.borderColor = "#586e75";
+      el.style.color       = "#93a1a1";
+      el.classList.remove('is-active', 'is-validated');
+    });
+
+    return { status: "hidden", ...this.getState() };
+  }
+
+  clearValidation() {
+    this.validated  = false;
+    this._clearActive();
+
+    if (this.jsp) {
+      this._connMap.forEach(c => {
         c.removeClass("conn-correct conn-incorrect");
       });
-      this.jsp.deleteAllConnections();
     }
 
     // Supprimer les étincelles
@@ -801,6 +826,7 @@ export class CablingManager {
       el.style.cursor      = "pointer";
       el.style.borderColor = "#586e75";
       el.style.color       = "#93a1a1";
+      el.classList.remove('is-active', 'is-validated');
     });
 
     return { status: "hidden", ...this.getState() };

@@ -665,11 +665,11 @@ viewof requestedBlock = {
 //| echo: false
 
 // 1. Initialisation de l'état mémoire
-mutable cacheState = {
+mutable cacheState = ({
   l1: [], l2: [],
   hitsL1: 0, hitsL2: 0, misses: 0,
   logMessage: "En attente de la première requête..."
-}
+})
 mutable lastAction = null // Pour déclencher l'animation CSS
 
 // 2. Le Moteur de Cache (S'exécute à chaque clic sur un bouton)
